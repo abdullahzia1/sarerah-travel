@@ -7,7 +7,7 @@ import type { Review } from "@/types";
 interface ReviewsContentProps {
   reviews: Review[];
   rating: number | string;
-  count: string;
+  count: number | string;
   source: string;
 }
 
