@@ -150,7 +150,7 @@ export function Hero() {
           type="button"
           aria-label="Previous slide"
           onClick={() => prev()}
-          className="rounded-full p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="min-h-[44px] min-w-[44px] rounded-full p-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white focus:outline-none focus:ring-2 focus:ring-white/50 active:bg-white/20"
         >
           <svg className="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
@@ -162,7 +162,7 @@ export function Hero() {
           type="button"
           aria-label="Next slide"
           onClick={() => next()}
-          className="rounded-full p-2 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+          className="min-h-[44px] min-w-[44px] rounded-full p-3 text-white/80 transition-colors hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white focus:outline-none focus:ring-2 focus:ring-white/50 active:bg-white/20"
         >
           <svg className="h-6 w-6 md:h-8 md:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -170,7 +170,7 @@ export function Hero() {
         </button>
       </div>
 
-      {/* Dots with progress fill */}
+      {/* Dots with progress fill — min 44px touch target on mobile */}
       <div className="absolute bottom-4 left-0 right-0 z-10 flex justify-center gap-2 md:bottom-6">
         {heroImages.map((_, i) => (
           <button
@@ -179,15 +179,17 @@ export function Hero() {
             aria-label={`Go to slide ${i + 1}`}
             aria-current={i === activeIndex ? "true" : undefined}
             onClick={() => goTo(i)}
-            className="relative h-1.5 w-6 overflow-hidden rounded-full bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-transparent"
+            className="relative flex min-h-[44px] min-w-[44px] items-center justify-center overflow-hidden rounded-full focus:outline-none focus:ring-2 focus:ring-white/60 focus:ring-offset-2 focus:ring-offset-transparent"
           >
-            <span
-              className="absolute inset-y-0 left-0 rounded-full bg-white"
-              style={{
-                width: i === activeIndex ? `${progress * 100}%` : "0%",
-                transition: "width 80ms linear",
-              }}
-            />
+            <span className="absolute left-1/2 top-1/2 h-1.5 w-6 -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full bg-white/30">
+              <span
+                className="absolute inset-y-0 left-0 rounded-full bg-white"
+                style={{
+                  width: i === activeIndex ? `${progress * 100}%` : "0%",
+                  transition: "width 80ms linear",
+                }}
+              />
+            </span>
           </button>
         ))}
       </div>

@@ -79,7 +79,7 @@ export function Header() {
 
         <motion.button
           type="button"
-          className="rounded-lg p-2 text-stone-600 hover:bg-stone-100 md:hidden"
+          className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg text-stone-600 hover:bg-stone-100 md:hidden"
           aria-label="Toggle menu"
           onClick={() => setOpen(!open)}
           whileTap={{ scale: 0.92 }}

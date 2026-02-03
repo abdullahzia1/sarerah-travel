@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ViewportReveal } from "@/components/ui/animations";
 
 const inputClass =
-  "w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-stone-900 placeholder:text-stone-400 transition-smooth focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20";
+  "min-h-[44px] w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-base text-stone-900 placeholder:text-stone-400 transition-smooth focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20";
 
 export default function ContactPage() {
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -91,7 +91,7 @@ export default function ContactPage() {
               </label>
               <label className="block">
                 <span className="sr-only">Your message</span>
-                <textarea name="message" required rows={4} placeholder="Your message" className={inputClass} />
+                <textarea name="message" required rows={4} placeholder="Your message" className={inputClass + " min-h-[120px]"} />
               </label>
               <AnimatePresence mode="wait">
                 {status === "success" && (
@@ -118,7 +118,7 @@ export default function ContactPage() {
               <button
                 type="submit"
                 disabled={status === "loading"}
-                className="smooth-tap w-full rounded-full bg-teal-600 py-3 font-semibold text-white transition-smooth hover:bg-teal-700 hover:shadow-md disabled:opacity-70"
+                className="smooth-tap min-h-[44px] w-full rounded-full bg-teal-600 py-3 font-semibold text-white transition-smooth hover:bg-teal-700 hover:shadow-md disabled:opacity-70"
               >
                 {status === "loading" ? "Sending…" : "Send message"}
               </button>

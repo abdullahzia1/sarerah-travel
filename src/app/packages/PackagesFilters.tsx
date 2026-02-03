@@ -49,13 +49,13 @@ export function PackagesFilters() {
   return (
     <div className="sticky top-16 z-30 border-b border-stone-200 bg-white/95 shadow-sm backdrop-blur">
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap items-center gap-4">
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-sm font-medium text-stone-500">Destination</span>
             <select
               value={destination}
               onChange={(e) => (window.location.href = `/packages?${setParam("destination", e.target.value)}`)}
-              className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
+              className="min-h-[44px] rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-sm"
             >
               <option value="">All</option>
               {destinations.map((d) => (
@@ -70,7 +70,7 @@ export function PackagesFilters() {
             <select
               value={duration}
               onChange={(e) => (window.location.href = `/packages?${setParam("duration", e.target.value)}`)}
-              className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
+              className="min-h-[44px] rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-sm"
             >
               {DURATIONS.map((o) => (
                 <option key={o.value || "any"} value={o.value}>
@@ -84,7 +84,7 @@ export function PackagesFilters() {
             <select
               value={budget}
               onChange={(e) => (window.location.href = `/packages?${setParam("budget", e.target.value)}`)}
-              className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
+              className="min-h-[44px] rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-sm"
             >
               {BUDGETS.map((o) => (
                 <option key={o.value || "any"} value={o.value}>
@@ -98,7 +98,7 @@ export function PackagesFilters() {
             <select
               value={type}
               onChange={(e) => (window.location.href = `/packages?${setParam("type", e.target.value)}`)}
-              className="rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm"
+              className="min-h-[44px] rounded-lg border border-stone-300 bg-white px-3 py-2.5 text-sm"
             >
               <option value="">All</option>
               {TYPES.map((t) => (
@@ -111,7 +111,7 @@ export function PackagesFilters() {
           {(destination || duration || budget || type) && (
             <a
               href="/packages"
-              className="text-sm font-medium text-teal-700 hover:text-teal-800"
+              className="inline-block min-h-[44px] py-2.5 text-sm font-medium text-teal-700 hover:text-teal-800"
             >
               Clear filters
             </a>

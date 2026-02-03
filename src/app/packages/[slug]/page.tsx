@@ -59,12 +59,12 @@ export default async function PackageDetailPage({ params }: Props) {
           priority
         />
         <div className="overlay-dark absolute inset-0" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 text-white md:p-10">
-          <span className="text-sm font-medium uppercase tracking-wider text-white/90">
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white sm:p-6 md:p-10">
+          <span className="text-xs font-medium uppercase tracking-wider text-white/90 sm:text-sm">
             {pkg.destinationName}
           </span>
-          <h1 className="mt-1 font-display text-3xl font-bold sm:text-4xl md:text-5xl">{pkg.name}</h1>
-          <div className="mt-3 flex flex-wrap gap-4 text-sm">
+          <h1 className="mt-1 font-display text-2xl font-bold sm:text-4xl md:text-5xl">{pkg.name}</h1>
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs sm:mt-3 sm:text-sm">
             <span>{pkg.durationDays} days</span>
             <span>{pkg.difficulty}</span>
             <span>Group: {pkg.groupSize}</span>
@@ -78,8 +78,8 @@ export default async function PackageDetailPage({ params }: Props) {
         </div>
       </section>
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-3">
+      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-3 lg:gap-10">
           <div className="lg:col-span-2 space-y-10">
             <p className="text-lg text-stone-600">{pkg.description ?? pkg.shortDescription}</p>
 
@@ -174,8 +174,8 @@ export default async function PackageDetailPage({ params }: Props) {
           </div>
 
           <div className="lg:col-span-1">
-            <aside className="sticky top-24 space-y-6">
-              <div className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm">
+            <aside className="lg:sticky lg:top-24 space-y-6">
+              <div className="rounded-2xl border border-stone-200 bg-white p-4 shadow-sm sm:p-6">
                 <p className="text-sm text-stone-500">From</p>
                 <p className="font-display text-3xl font-bold text-teal-700">
                   {formatPricePkr(pkg.priceFromPkr)}
@@ -191,7 +191,7 @@ export default async function PackageDetailPage({ params }: Props) {
                 <div className="mt-6 space-y-3">
                   <a
                     href="#itinerary-request"
-                    className="flex w-full items-center justify-center rounded-full bg-teal-600 py-3 font-semibold text-white hover:bg-teal-700"
+                    className="flex min-h-[44px] w-full items-center justify-center rounded-full bg-teal-600 py-3 font-semibold text-white hover:bg-teal-700"
                   >
                     Request itinerary
                   </a>
@@ -199,13 +199,13 @@ export default async function PackageDetailPage({ params }: Props) {
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex w-full items-center justify-center rounded-full border border-stone-300 py-3 font-medium text-stone-600 hover:bg-stone-50"
+                    className="flex min-h-[44px] w-full items-center justify-center rounded-full border border-stone-300 py-3 font-medium text-stone-600 hover:bg-stone-50"
                   >
                     Chat
                   </a>
                   <a
                     href="tel:+923001234567"
-                    className="flex w-full items-center justify-center rounded-full border border-stone-300 py-3 font-medium text-stone-600 hover:bg-stone-50"
+                    className="flex min-h-[44px] w-full items-center justify-center rounded-full border border-stone-300 py-3 font-medium text-stone-600 hover:bg-stone-50"
                   >
                     Call
                   </a>

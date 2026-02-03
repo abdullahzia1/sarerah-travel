@@ -29,29 +29,29 @@ export function Footer() {
             <p className="mt-3 max-w-xs text-sm text-stone-600">
               Luxury adventure at excellent value. North Pakistan & Asia — curated trips, seamless experience.
             </p>
-            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-sm text-stone-600">
-              <a href="tel:+923001234567" className="link-underline hover:text-stone-900">
+            <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
+              <a href="tel:+923001234567" className="link-underline inline-block py-2 hover:text-stone-900">
                 +92 300 1234567
               </a>
               <a
                 href="https://wa.me/923001234567"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="link-underline hover:text-stone-900"
+                className="link-underline inline-block py-2 hover:text-stone-900"
               >
                 WhatsApp
               </a>
-              <a href="mailto:hello@sarerahtravel.com" className="link-underline hover:text-stone-900">
+              <a href="mailto:hello@sarerahtravel.com" className="link-underline inline-block py-2 hover:text-stone-900">
                 hello@sarerahtravel.com
               </a>
             </div>
           </div>
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-stone-500">Trips</h3>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-3 space-y-0">
               {links.trips.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="link-underline text-sm text-stone-600 hover:text-stone-900">
+                  <Link href={l.href} className="link-underline block py-2 text-sm text-stone-600 hover:text-stone-900">
                     {l.label}
                   </Link>
                 </li>
@@ -60,10 +60,10 @@ export function Footer() {
           </div>
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-stone-500">Company</h3>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-3 space-y-0">
               {links.company.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="link-underline text-sm text-stone-600 hover:text-stone-900">
+                  <Link href={l.href} className="link-underline block py-2 text-sm text-stone-600 hover:text-stone-900">
                     {l.label}
                   </Link>
                 </li>
@@ -72,10 +72,10 @@ export function Footer() {
           </div>
           <div>
             <h3 className="text-sm font-semibold uppercase tracking-wider text-stone-500">Support</h3>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-3 space-y-0">
               {links.support.map((l) => (
                 <li key={l.href}>
-                  <Link href={l.href} className="link-underline text-sm text-stone-600 hover:text-stone-900">
+                  <Link href={l.href} className="link-underline block py-2 text-sm text-stone-600 hover:text-stone-900">
                     {l.label}
                   </Link>
                 </li>

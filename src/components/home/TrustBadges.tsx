@@ -5,7 +5,7 @@ export function TrustBadges() {
   return (
     <section className="border-b border-stone-200 bg-white py-8">
       <ViewportReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" variant="fadeIn">
-        <div className="flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
+        <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-6 sm:gap-x-10">
           {trustBadges.map((badge) => (
             <div key={badge.label} className="flex flex-col items-center text-center">
               <span className="font-display text-sm font-semibold text-stone-900">{badge.label}</span>

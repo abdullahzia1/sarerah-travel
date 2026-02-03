@@ -52,7 +52,7 @@ export function LeadForm() {
                 type="text"
                 name="name"
                 required
-                className="mt-1 w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
+                className="mt-1 min-h-[44px] w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-base text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
                 placeholder="Your name"
               />
             </label>
@@ -62,7 +62,7 @@ export function LeadForm() {
                 type="tel"
                 name="phone"
                 required
-                className="mt-1 w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
+                className="mt-1 min-h-[44px] w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-base text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
                 placeholder="+92 300 1234567"
               />
             </label>
@@ -72,7 +72,7 @@ export function LeadForm() {
             <input
               type="email"
               name="email"
-              className="mt-1 w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
+              className="mt-1 min-h-[44px] w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-base text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
               placeholder="you@example.com"
             />
           </label>
@@ -81,7 +81,7 @@ export function LeadForm() {
             <input
               type="text"
               name="destination"
-              className="mt-1 w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
+              className="mt-1 min-h-[44px] w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-base text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
               placeholder="e.g. Hunza, Thailand, Skardu"
             />
           </label>
@@ -90,7 +90,7 @@ export function LeadForm() {
             <textarea
               name="message"
               rows={3}
-              className="mt-1 w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
+              className="mt-1 min-h-[80px] w-full rounded-lg border border-teal-600 bg-white/10 px-4 py-3 text-base text-white placeholder-teal-300 focus:border-teal-400 focus:outline-none focus:ring-1 focus:ring-teal-400"
               placeholder="Dates, travelers, budget (optional)"
             />
           </label>
@@ -119,7 +119,7 @@ export function LeadForm() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className="smooth-tap w-full rounded-full bg-white py-3.5 font-semibold text-teal-800 transition-smooth hover:bg-teal-50 hover:shadow-md disabled:opacity-70"
+            className="smooth-tap min-h-[44px] w-full rounded-full bg-white py-3.5 font-semibold text-teal-800 transition-smooth hover:bg-teal-50 hover:shadow-md disabled:opacity-70"
           >
             {status === "loading" ? "Sending…" : "Get my itinerary"}
           </button>

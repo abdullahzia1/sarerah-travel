@@ -29,10 +29,10 @@ export function Testimonials() {
             {reviews.map((r) => (
               <div
                 key={r.id}
-                className="flex-shrink-0 px-2 md:px-3"
+                className="flex-shrink-0 px-3 md:px-3"
                 style={{ width: `${100 / reviews.length}%` }}
               >
-                <blockquote className="rounded-2xl border border-stone-200 bg-white p-8 shadow-sm transition-smooth hover:shadow-md md:p-10">
+                <blockquote className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm transition-smooth hover:shadow-md sm:p-8 md:p-10">
                   <div className="flex gap-1 text-amber-500">
                     {Array.from({ length: r.rating }).map((_, i) => (
                       <StarIcon key={i} className="h-5 w-5" />
@@ -52,19 +52,22 @@ export function Testimonials() {
               </div>
             ))}
           </motion.div>
-          <div className="mt-6 flex justify-center gap-2">
+          <div className="mt-6 flex justify-center gap-1 sm:gap-2">
             {reviews.map((_, i) => (
               <motion.button
                 key={i}
                 type="button"
                 aria-label={`Review ${i + 1}`}
                 onClick={() => setActive(i)}
-                className={`h-2 rounded-full transition-smooth ${
-                  i === active ? "w-8 bg-teal-600" : "w-2 bg-stone-300 hover:bg-stone-400"
-                }`}
-                whileHover={{ scale: 1.15 }}
-                whileTap={{ scale: 0.9 }}
-              />
+                className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full transition-smooth hover:opacity-90"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span
+                  className={`rounded-full transition-smooth ${i === active ? "h-2 w-8 bg-teal-600" : "h-2 w-2 bg-stone-300"}`}
+                  aria-hidden
+                />
+              </motion.button>
             ))}
           </div>
         </div>

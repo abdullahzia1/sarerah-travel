@@ -84,10 +84,10 @@ export function PackageCard({ pkg }: PackageCardProps) {
               <p className="text-xs text-stone-500">≈ ${pkg.priceFromUsd} USD</p>
             )}
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Link
               href={`/packages/${pkg.slug}#itinerary-request`}
-              className="smooth-tap inline-flex items-center rounded-full bg-teal-600 px-3 py-2 text-sm font-semibold text-white transition-smooth hover:bg-teal-700 hover:shadow-md"
+              className="smooth-tap inline-flex min-h-[44px] items-center rounded-full bg-teal-600 px-4 py-2.5 text-sm font-semibold text-white transition-smooth hover:bg-teal-700 hover:shadow-md"
             >
               Request itinerary
             </Link>
@@ -95,7 +95,7 @@ export function PackageCard({ pkg }: PackageCardProps) {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="smooth-tap inline-flex items-center rounded-full border border-stone-300 px-3 py-2 text-sm font-medium text-stone-600 transition-smooth hover:bg-stone-50"
+              className="smooth-tap inline-flex min-h-[44px] items-center rounded-full border border-stone-300 px-4 py-2.5 text-sm font-medium text-stone-600 transition-smooth hover:bg-stone-50"
             >
               Chat
             </a>

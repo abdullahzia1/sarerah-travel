@@ -56,7 +56,7 @@ export default function PlanPage() {
                 type="text"
                 name="name"
                 required
-                className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="mt-1 min-h-[44px] w-full rounded-lg border border-stone-300 px-4 py-3 text-base text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 placeholder="Your name"
               />
             </label>
@@ -66,7 +66,7 @@ export default function PlanPage() {
                 type="tel"
                 name="phone"
                 required
-                className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="mt-1 min-h-[44px] w-full rounded-lg border border-stone-300 px-4 py-3 text-base text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 placeholder="+92 300 1234567"
               />
             </label>
@@ -76,7 +76,7 @@ export default function PlanPage() {
             <input
               type="email"
               name="email"
-              className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+              className="mt-1 min-h-[44px] w-full rounded-lg border border-stone-300 px-4 py-3 text-base text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
               placeholder="you@example.com"
             />
           </label>
@@ -85,7 +85,7 @@ export default function PlanPage() {
             <input
               type="text"
               name="destination"
-              className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+              className="mt-1 min-h-[44px] w-full rounded-lg border border-stone-300 px-4 py-3 text-base text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
               placeholder="e.g. Hunza, Skardu, Thailand, Malaysia"
             />
           </label>
@@ -95,7 +95,7 @@ export default function PlanPage() {
               <input
                 type="text"
                 name="dates"
-                className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="mt-1 min-h-[44px] w-full rounded-lg border border-stone-300 px-4 py-3 text-base text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 placeholder="e.g. March 2025, or flexible"
               />
             </label>
@@ -104,7 +104,7 @@ export default function PlanPage() {
               <input
                 type="text"
                 name="travelers"
-                className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+                className="mt-1 min-h-[44px] w-full rounded-lg border border-stone-300 px-4 py-3 text-base text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
                 placeholder="e.g. 4 adults, 2 kids"
               />
             </label>
@@ -114,7 +114,7 @@ export default function PlanPage() {
             <input
               type="text"
               name="budget"
-              className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+              className="mt-1 min-h-[44px] w-full rounded-lg border border-stone-300 px-4 py-3 text-base text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
               placeholder="e.g. 100k PKR per person, or USD"
             />
           </label>
@@ -123,7 +123,7 @@ export default function PlanPage() {
             <textarea
               name="message"
               rows={4}
-              className="mt-1 w-full rounded-lg border border-stone-300 px-4 py-3 text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
+              className="mt-1 min-h-[100px] w-full rounded-lg border border-stone-300 px-4 py-3 text-base text-stone-900 focus:border-teal-500 focus:outline-none focus:ring-1 focus:ring-teal-500"
               placeholder="Trip type (adventure, family, honeymoon), special requests, etc."
             />
           </label>
@@ -140,7 +140,7 @@ export default function PlanPage() {
           <button
             type="submit"
             disabled={status === "loading"}
-            className="w-full rounded-full bg-teal-600 py-3.5 font-semibold text-white hover:bg-teal-700 disabled:opacity-70"
+            className="min-h-[44px] w-full rounded-full bg-teal-600 py-3.5 font-semibold text-white hover:bg-teal-700 disabled:opacity-70"
           >
             {status === "loading" ? "Sending…" : "Get my custom itinerary"}
           </button>

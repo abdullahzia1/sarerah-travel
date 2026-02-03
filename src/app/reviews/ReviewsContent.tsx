@@ -20,7 +20,7 @@ export function ReviewsContent({ reviews, rating, count, source }: ReviewsConten
             <h1 className="font-display text-3xl font-bold text-stone-900 sm:text-4xl">Traveler Reviews</h1>
             <p className="mt-2 text-stone-600">Real feedback from people who traveled with us.</p>
             <ViewportReveal delay={0.1} className="mt-6">
-              <div className="flex items-center gap-4 rounded-xl bg-amber-50 px-6 py-4 transition-smooth hover:shadow-md">
+              <div className="flex flex-wrap items-center gap-4 rounded-xl bg-amber-50 px-4 py-4 transition-smooth hover:shadow-md sm:px-6">
                 <span className="font-display text-3xl font-bold text-stone-900">{rating}</span>
                 <div>
                   <p className="font-medium text-stone-800">Rated excellent</p>

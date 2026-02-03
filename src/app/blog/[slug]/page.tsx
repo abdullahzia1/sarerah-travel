@@ -50,9 +50,9 @@ export default async function BlogPostPage({ params }: Props) {
             sizes="(max-width: 768px) 100vw, 672px"
           />
         </div>
-        <div className="mt-8 prose prose-stone max-w-none">
+        <div className="mt-8 prose prose-stone max-w-none prose-img:max-w-full prose-img:w-full prose-pre:overflow-x-auto">
           <p className="text-lg text-stone-700">{post.excerpt}</p>
-          <div className="mt-6 text-stone-700 whitespace-pre-line">
+          <div className="mt-6 text-stone-700 whitespace-pre-line break-words">
             {post.content.replace(/\*\*(.*?)\*\*/g, "$1").split("\n").map((p, i) => (
               <p key={i} className="mb-4">{p}</p>
             ))}
