@@ -1,4 +1,4 @@
-const WHATSAPP_NUMBER = "923444446699"; // Replace with real number; use country code without +
+const WHATSAPP_NUMBER = "92355569982"; // Replace with real number; use country code without +
 
 export function getWhatsAppUrl(message: string): string {
   const encoded = encodeURIComponent(message);
