@@ -5,8 +5,8 @@ export function TravelAgencyJsonLd() {
     name: "Sarerah Travel",
     description: "Premium travel agency from Pakistan. North Pakistan & Asia tours. Licensed guides, no hidden charges.",
     url: "https://sarerahtravel.com",
-    telephone: "+92-300-1234567",
-    email: "hello@sarerahtravel.com",
+    telephone: "+92-355-4469982",
+    email: "sarerah.travel@gmail.com",
     address: {
       "@type": "PostalAddress",
       addressCountry: "PK",
