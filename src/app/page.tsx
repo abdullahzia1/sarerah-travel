@@ -7,17 +7,26 @@ import { AdventureCategories } from "@/components/home/AdventureCategories";
 import { Testimonials } from "@/components/home/Testimonials";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { LeadForm } from "@/components/home/LeadForm";
+import { getAllDestinations } from "@/data/destinations";
+import { getFeaturedPackages } from "@/data/packages";
+import { getRecentReviews } from "@/data/reviews";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [destinations, featuredPackages, recentReviews] = await Promise.all([
+    getAllDestinations(),
+    getFeaturedPackages(6),
+    getRecentReviews(6),
+  ]);
+
   return (
     <>
-      <Hero />
+      <Hero destinations={destinations} />
       <TrustBadges />
-      <FeaturedTrips />
+      <FeaturedTrips packages={featuredPackages} />
       <WhyTravelWithUs />
-      <ExploreDestinations />
+      <ExploreDestinations destinations={destinations} />
       <AdventureCategories />
-      <Testimonials />
+      <Testimonials reviews={recentReviews} />
       <HowItWorks />
       <LeadForm />
       <div className="h-20 md:hidden" aria-hidden />

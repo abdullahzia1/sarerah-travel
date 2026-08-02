@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ViewportReveal } from "@/components/ui/animations";
+import { useSiteSettings } from "@/lib/site-settings-context";
 
 const inputClass =
   "min-h-[44px] w-full rounded-lg border border-stone-300 bg-white px-4 py-3 text-base text-stone-900 placeholder:text-stone-400 transition-smooth focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20";
 
 export default function ContactPage() {
+  const { whatsappNumber, contactEmail } = useSiteSettings();
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -52,13 +54,13 @@ export default function ContactPage() {
             <h2 className="font-display text-xl font-semibold text-stone-900">Get in touch</h2>
             <ul className="mt-4 space-y-4 text-stone-700">
               <li>
-                <a href="tel:+923001234567" className="link-underline font-medium text-stone-900">
-                  +92 300 1234567
+                <a href={`tel:+${whatsappNumber}`} className="link-underline font-medium text-stone-900">
+                  +{whatsappNumber}
                 </a>
               </li>
               <li>
                 <a
-                  href="https://wa.me/923001234567"
+                  href={`https://wa.me/${whatsappNumber}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="link-underline text-stone-700 hover:text-stone-900"
@@ -67,8 +69,8 @@ export default function ContactPage() {
                 </a>
               </li>
               <li>
-                <a href="mailto:hello@sarerahtravel.com" className="link-underline font-medium text-stone-900">
-                  hello@sarerahtravel.com
+                <a href={`mailto:${contactEmail}`} className="link-underline font-medium text-stone-900">
+                  {contactEmail}
                 </a>
               </li>
             </ul>

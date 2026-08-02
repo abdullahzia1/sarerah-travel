@@ -2,7 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import { useCallback } from "react";
-import { destinations } from "@/data/destinations";
+import type { Destination } from "@/types";
 
 const DURATIONS = [
   { value: "", label: "Any" },
@@ -28,7 +28,7 @@ const TYPES = [
   "Group Tour",
 ];
 
-export function PackagesFilters() {
+export function PackagesFilters({ destinations }: { destinations: Destination[] }) {
   const searchParams = useSearchParams();
 
   const setParam = useCallback(

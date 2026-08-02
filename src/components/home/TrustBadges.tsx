@@ -1,7 +1,10 @@
-import { trustBadges, reviewHighlight } from "@/data/trust";
+import { getSiteSettings } from "@/data/settings";
+import { getGoogleReviews } from "@/lib/google-reviews";
 import { ViewportReveal } from "@/components/ui/animations";
 
-export function TrustBadges() {
+export async function TrustBadges() {
+  const [{ trustBadges }, { rating, reviewCount }] = await Promise.all([getSiteSettings(), getGoogleReviews()]);
+
   return (
     <section className="border-b border-stone-200 bg-white py-8">
       <ViewportReveal className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" variant="fadeIn">
@@ -14,15 +17,15 @@ export function TrustBadges() {
               )}
             </div>
           ))}
-          <div className="flex flex-col items-center rounded-lg bg-amber-50 px-4 py-2">
-            <div className="flex items-center gap-1">
-              <span className="font-display text-lg font-bold text-stone-900">{reviewHighlight.rating}</span>
-              <StarIcon className="h-5 w-5 text-amber-500" />
+          {reviewCount > 0 && (
+            <div className="flex flex-col items-center rounded-lg bg-amber-50 px-4 py-2">
+              <div className="flex items-center gap-1">
+                <span className="font-display text-lg font-bold text-stone-900">{rating}</span>
+                <StarIcon className="h-5 w-5 text-amber-500" />
+              </div>
+              <span className="text-xs text-stone-600">{reviewCount}+ reviews · Google</span>
             </div>
-            <span className="text-xs text-stone-600">
-              {reviewHighlight.count}+ reviews · {reviewHighlight.source}
-            </span>
-          </div>
+          )}
         </div>
         <p className="mt-4 text-center text-sm text-stone-600">
           No hidden charges · Support throughout your trip

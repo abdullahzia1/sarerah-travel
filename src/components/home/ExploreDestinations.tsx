@@ -1,11 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { destinations } from "@/data/destinations";
 import { DestinationTile } from "@/components/destinations/DestinationTile";
 import { StaggerContainer, StaggerChild, ViewportReveal } from "@/components/ui/animations";
+import type { Destination } from "@/types";
 
-export function ExploreDestinations() {
+interface ExploreDestinationsProps {
+  destinations: Destination[];
+}
+
+export function ExploreDestinations({ destinations }: ExploreDestinationsProps) {
   const northPakistan = destinations.filter((d) => d.region === "North Pakistan");
   const international = destinations.filter((d) => d.region === "International");
 

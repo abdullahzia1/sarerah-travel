@@ -1,5 +1,4 @@
-import Link from "next/link";
-import { destinations } from "@/data/destinations";
+import { getAllDestinations } from "@/data/destinations";
 import { DestinationTile } from "@/components/destinations/DestinationTile";
 
 export const metadata = {
@@ -8,7 +7,8 @@ export const metadata = {
     "Explore North Pakistan (Hunza, Skardu, Naran, Fairy Meadows) and international destinations: Thailand, Malaysia, Sri Lanka, Nepal, Azerbaijan.",
 };
 
-export default function DestinationsPage() {
+export default async function DestinationsPage() {
+  const destinations = await getAllDestinations();
   const northPakistan = destinations.filter((d) => d.region === "North Pakistan");
   const international = destinations.filter((d) => d.region === "International");
 

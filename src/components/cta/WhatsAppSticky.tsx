@@ -1,10 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { getWhatsAppUrl, getGenericWhatsAppMessage } from "@/lib/whatsapp";
+import { buildWhatsAppUrl, getGenericWhatsAppMessage } from "@/lib/whatsapp";
+import { useSiteSettings } from "@/lib/site-settings-context";
 
 export function WhatsAppSticky() {
-  const url = getWhatsAppUrl(getGenericWhatsAppMessage());
+  const { whatsappNumber } = useSiteSettings();
+  const url = buildWhatsAppUrl(whatsappNumber, getGenericWhatsAppMessage());
 
   return (
     <motion.a

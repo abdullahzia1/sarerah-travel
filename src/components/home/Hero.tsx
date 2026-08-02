@@ -4,8 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { destinations } from "@/data/destinations";
 import { FadeInUp } from "@/components/ui/animations";
+import { useSiteSettings } from "@/lib/site-settings-context";
+import { buildWhatsAppUrl, getGenericWhatsAppMessage } from "@/lib/whatsapp";
+import type { Destination } from "@/types";
 
 const heroImages = [
   "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1920&q=80",
@@ -15,9 +17,14 @@ const heroImages = [
 const CAROUSEL_INTERVAL_MS = 6000;
 const CROSSFADE_DURATION = 0.9;
 
-const chipDestinations = destinations.slice(0, 8).map((d) => ({ slug: d.slug, name: d.name }));
+interface HeroProps {
+  destinations: Destination[];
+}
 
-export function Hero() {
+export function Hero({ destinations }: HeroProps) {
+  const chipDestinations = destinations.slice(0, 8).map((d) => ({ slug: d.slug, name: d.name }));
+  const { whatsappNumber } = useSiteSettings();
+  const whatsappUrl = buildWhatsAppUrl(whatsappNumber, getGenericWhatsAppMessage());
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -118,7 +125,7 @@ export function Hero() {
             </div>
             <p className="mt-4 text-sm text-white/90 [text-shadow:0_1px_2px_rgba(0,0,0,0.4)]">
               Prefer to chat? Use the{" "}
-              <a href="https://wa.me/923001234567" target="_blank" rel="noopener noreferrer" className="underline hover:text-white">
+              <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-white">
                 chat button
               </a>{" "}
               in the corner.

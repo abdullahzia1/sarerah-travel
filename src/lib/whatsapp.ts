@@ -1,8 +1,5 @@
-const WHATSAPP_NUMBER = "92355569982"; // Replace with real number; use country code without +
-
-export function getWhatsAppUrl(message: string): string {
-  const encoded = encodeURIComponent(message);
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encoded}`;
+export function buildWhatsAppUrl(whatsappNumber: string, message: string): string {
+  return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 }
 
 export function getPackageWhatsAppMessage(packageName: string): string {
@@ -16,5 +13,3 @@ export function getDestinationWhatsAppMessage(destinationName: string): string {
 export function getGenericWhatsAppMessage(): string {
   return "Hi, I'd like to plan a trip. Can you help me with options?";
 }
-
-export { WHATSAPP_NUMBER };

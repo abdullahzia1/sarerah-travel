@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { getFeaturedPackages } from "@/data/packages";
 import { PackageCard } from "@/components/packages/PackageCard";
 import { StaggerContainer, StaggerChild, ViewportReveal } from "@/components/ui/animations";
+import type { Package } from "@/types";
 
-export function FeaturedTrips() {
-  const featured = getFeaturedPackages(6);
+interface FeaturedTripsProps {
+  packages: Package[];
+}
 
+export function FeaturedTrips({ packages: featured }: FeaturedTripsProps) {
   return (
     <section className="bg-stone-50 py-16 md:py-24">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

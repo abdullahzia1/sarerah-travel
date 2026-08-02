@@ -2,10 +2,14 @@
 
 import { useSearchParams } from "next/navigation";
 import { useMemo } from "react";
-import { packages as allPackages } from "@/data/packages";
 import { PackageCard } from "@/components/packages/PackageCard";
+import type { Package } from "@/types";
 
-export function PackagesList() {
+interface PackagesListProps {
+  packages: Package[];
+}
+
+export function PackagesList({ packages: allPackages }: PackagesListProps) {
   const searchParams = useSearchParams();
 
   const filtered = useMemo(() => {
@@ -26,7 +30,7 @@ export function PackagesList() {
       list = list.filter((p) => p.priceFromPkr <= maxBudget);
     }
     return list;
-  }, [searchParams]);
+  }, [allPackages, searchParams]);
 
   if (filtered.length === 0) {
     return (

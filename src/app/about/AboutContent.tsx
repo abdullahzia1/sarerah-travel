@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { ViewportReveal } from "@/components/ui/animations";
+import { useSiteSettings } from "@/lib/site-settings-context";
 
 export function AboutContent() {
+  const { whatsappNumber } = useSiteSettings();
   return (
     <>
       <div className="border-b border-stone-200 bg-white py-10">
@@ -71,7 +73,7 @@ export function AboutContent() {
                 Contact us
               </Link>
               <a
-                href="https://wa.me/923001234567"
+                href={`https://wa.me/${whatsappNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm font-medium text-stone-600 underline hover:text-stone-900"

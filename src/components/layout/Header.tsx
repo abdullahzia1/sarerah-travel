@@ -12,9 +12,7 @@ const nav = [
   { href: "/destinations", label: "Destinations" },
   { href: "/about", label: "About" },
   { href: "/reviews", label: "Reviews" },
-  { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
-  { href: "/faq", label: "FAQ" },
 ];
 
 export function Header() {

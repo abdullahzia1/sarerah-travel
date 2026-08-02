@@ -2,14 +2,18 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { getRecentReviews } from "@/data/reviews";
 import { formatDate } from "@/lib/utils";
 import { ViewportReveal } from "@/components/ui/animations";
+import type { Review } from "@/types";
 
-const reviews = getRecentReviews(6);
+interface TestimonialsProps {
+  reviews: Review[];
+}
 
-export function Testimonials() {
+export function Testimonials({ reviews }: TestimonialsProps) {
   const [active, setActive] = useState(0);
+
+  if (reviews.length === 0) return null;
 
   return (
     <section className="bg-stone-50 py-16 md:py-24">
@@ -26,9 +30,9 @@ export function Testimonials() {
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
             style={{ width: `${reviews.length * 100}%` }}
           >
-            {reviews.map((r) => (
+            {reviews.map((r, i) => (
               <div
-                key={r.id}
+                key={`${r.author}-${i}`}
                 className="flex-shrink-0 px-3 md:px-3"
                 style={{ width: `${100 / reviews.length}%` }}
               >
@@ -40,12 +44,7 @@ export function Testimonials() {
                   </div>
                   <p className="mt-4 text-lg text-stone-700">&ldquo;{r.text}&rdquo;</p>
                   <footer className="mt-6 flex items-center justify-between">
-                    <div>
-                      <cite className="font-semibold not-italic text-stone-900">{r.author}</cite>
-                      {r.location && (
-                        <span className="ml-2 text-sm text-stone-500">{r.location}</span>
-                      )}
-                    </div>
+                    <cite className="font-semibold not-italic text-stone-900">{r.author}</cite>
                     <time className="text-sm text-stone-500">{formatDate(r.date)}</time>
                   </footer>
                 </blockquote>

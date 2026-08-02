@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import { getPackageBySlug } from "@/data/packages";
-import { getReviewsForPackage } from "@/data/reviews";
+import { getSiteSettings } from "@/data/settings";
 import { formatPricePkr, formatPriceUsd, formatDate } from "@/lib/utils";
+import { buildWhatsAppUrl, getPackageWhatsAppMessage } from "@/lib/whatsapp";
 import { TourPackageJsonLd } from "@/components/seo/JsonLd";
 import { PackageDetailCta } from "./PackageDetailCta";
 import { ItineraryRequestForm } from "./ItineraryRequestForm";
@@ -14,7 +14,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const pkg = getPackageBySlug(slug);
+  const pkg = await getPackageBySlug(slug);
   if (!pkg) return { title: "Package" };
   return {
     title: pkg.name,
@@ -29,12 +29,11 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function PackageDetailPage({ params }: Props) {
   const { slug } = await params;
-  const pkg = getPackageBySlug(slug);
+  const pkg = await getPackageBySlug(slug);
   if (!pkg) notFound();
 
-  const reviews = getReviewsForPackage(slug);
-  const whatsappMessage = `Hi, I'm interested in ${pkg.name}. Please share details.`;
-  const whatsappUrl = `https://wa.me/923001234567?text=${encodeURIComponent(whatsappMessage)}`;
+  const { whatsappNumber } = await getSiteSettings();
+  const whatsappUrl = buildWhatsAppUrl(whatsappNumber, getPackageWhatsAppMessage(pkg.name));
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://sarerahtravel.com";
 
@@ -144,26 +143,6 @@ export default async function PackageDetailPage({ params }: Props) {
               </section>
             )}
 
-            {reviews.length > 0 && (
-              <section>
-                <h2 className="font-display text-2xl font-bold text-stone-900">Reviews</h2>
-                <div className="mt-4 space-y-4">
-                  {reviews.slice(0, 3).map((r) => (
-                    <blockquote key={r.id} className="rounded-lg border border-stone-200 p-4">
-                      <p className="text-stone-700">&ldquo;{r.text}&rdquo;</p>
-                      <footer className="mt-2 text-sm text-stone-500">
-                        — {r.author}
-                        {r.location && `, ${r.location}`} · {formatDate(r.date)}
-                      </footer>
-                    </blockquote>
-                  ))}
-                </div>
-                <Link href="/reviews" className="mt-2 inline-block text-teal-700 font-medium hover:underline">
-                  All reviews →
-                </Link>
-              </section>
-            )}
-
             <section id="itinerary-request">
               <h2 className="font-display text-2xl font-bold text-stone-900">Request itinerary</h2>
               <p className="mt-2 text-stone-600">
@@ -204,7 +183,7 @@ export default async function PackageDetailPage({ params }: Props) {
                     Chat
                   </a>
                   <a
-                    href="tel:+923001234567"
+                    href={`tel:+${whatsappNumber}`}
                     className="flex min-h-[44px] w-full items-center justify-center rounded-full border border-stone-300 py-3 font-medium text-stone-600 hover:bg-stone-50"
                   >
                     Call

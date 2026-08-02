@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { SiteSettings } from "@/types";
 
 const links = {
   trips: [
@@ -9,15 +10,12 @@ const links = {
   company: [
     { href: "/about", label: "About Us" },
     { href: "/reviews", label: "Reviews" },
-    { href: "/blog", label: "Blog" },
   ],
-  support: [
-    { href: "/contact", label: "Contact" },
-    { href: "/faq", label: "FAQ" },
-  ],
+  support: [{ href: "/contact", label: "Contact" }],
 };
 
-export function Footer() {
+export function Footer({ settings }: { settings: SiteSettings }) {
+  const { whatsappNumber, contactEmail } = settings;
   return (
     <footer className="border-t border-stone-200 bg-stone-50">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
@@ -30,19 +28,19 @@ export function Footer() {
               Luxury adventure at excellent value. North Pakistan & Asia — curated trips, seamless experience.
             </p>
             <div className="mt-4 flex flex-wrap gap-x-6 gap-y-2 text-sm text-stone-600">
-              <a href="tel:+923001234567" className="link-underline inline-block py-2 hover:text-stone-900">
-                +92 300 1234567
+              <a href={`tel:+${whatsappNumber}`} className="link-underline inline-block py-2 hover:text-stone-900">
+                +{whatsappNumber}
               </a>
               <a
-                href="https://wa.me/923001234567"
+                href={`https://wa.me/${whatsappNumber}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="link-underline inline-block py-2 hover:text-stone-900"
               >
                 WhatsApp
               </a>
-              <a href="mailto:hello@sarerahtravel.com" className="link-underline inline-block py-2 hover:text-stone-900">
-                hello@sarerahtravel.com
+              <a href={`mailto:${contactEmail}`} className="link-underline inline-block py-2 hover:text-stone-900">
+                {contactEmail}
               </a>
             </div>
           </div>
@@ -80,6 +78,16 @@ export function Footer() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <a
+                  href={`https://wa.me/${whatsappNumber}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link-underline block py-2 text-sm text-stone-600 hover:text-stone-900"
+                >
+                  Questions? Chat on WhatsApp
+                </a>
+              </li>
             </ul>
           </div>
         </div>

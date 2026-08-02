@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { getDestinationBySlug } from "@/data/destinations";
 import { getPackagesByDestination } from "@/data/packages";
+import { getSiteSettings } from "@/data/settings";
+import { buildWhatsAppUrl, getDestinationWhatsAppMessage } from "@/lib/whatsapp";
 import { DestinationDetailContent } from "./DestinationDetailContent";
 
 interface Props {
@@ -11,7 +13,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const dest = getDestinationBySlug(slug);
+  const dest = await getDestinationBySlug(slug);
   if (!dest) return { title: "Destination" };
   return {
     title: dest.seoTitle ?? `${dest.name} Tour Packages`,
@@ -26,12 +28,14 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function DestinationDetailPage({ params }: Props) {
   const { slug } = await params;
-  const dest = getDestinationBySlug(slug);
+  const dest = await getDestinationBySlug(slug);
   if (!dest) notFound();
 
-  const packages = getPackagesByDestination(slug);
-  const whatsappMessage = `Hi, I'm interested in ${dest.name}. Please share details.`;
-  const whatsappUrl = `https://wa.me/923001234567?text=${encodeURIComponent(whatsappMessage)}`;
+  const [packages, { whatsappNumber }] = await Promise.all([
+    getPackagesByDestination(slug),
+    getSiteSettings(),
+  ]);
+  const whatsappUrl = buildWhatsAppUrl(whatsappNumber, getDestinationWhatsAppMessage(dest.name));
 
   return (
     <div className="pb-24 md:pb-12">

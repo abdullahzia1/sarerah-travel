@@ -1,0 +1,768 @@
+/**
+ * One-time seed: loads the site's original hardcoded content into Supabase
+ * so the live site launches with real content instead of an empty database.
+ * Destinations/packages/blog posts upsert by slug (safe to re-run); reviews
+ * and FAQs are replaced wholesale each run, so re-running after an admin has
+ * edited them via the dashboard will overwrite those edits.
+ *
+ * Usage: npm run seed   (reads NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY from .env.local)
+ */
+import { createClient } from "@supabase/supabase-js";
+
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!url || !serviceRoleKey) {
+  throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY. Set them in .env.local.");
+}
+const supabase = createClient(url, serviceRoleKey);
+
+const destinations = [
+  {
+    slug: "hunza",
+    name: "Hunza Valley",
+    region: "North Pakistan",
+    shortDescription: "Heaven on earth — peaks, orchards, and ancient forts.",
+    description:
+      "Hunza Valley is one of Pakistan's most iconic destinations, offering stunning views of Rakaposhi and Ultar Sar, apricot blossoms, and the historic Baltit and Altit forts. Perfect for road trips, trekking, and cultural immersion.",
+    image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&q=80",
+    highlights: ["Baltit & Altit Forts", "Rakaposhi View", "Karimabad", "Eagle's Nest", "Local cuisine"],
+    bestSeason: "March–November (peak: April–May, Sept–Oct)",
+    seoTitle: "Hunza Tour Packages from Pakistan | Luxury Adventure Tours",
+    seoDescription:
+      "Book Hunza Valley tours from Pakistan. Best packages for Hunza, Karimabad, and surrounding valleys. Licensed guides, no hidden charges.",
+  },
+  {
+    slug: "skardu",
+    name: "Skardu & Baltoro",
+    region: "North Pakistan",
+    shortDescription: "Gateway to K2 and the world's mightiest peaks.",
+    description:
+      "Skardu serves as the base for treks to K2, Concordia, and the Baltoro Glacier. Experience high-altitude adventure, pristine lakes like Shangrila, and the warmth of Balti culture.",
+    image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80",
+    highlights: ["K2 Base Camp", "Shangrila Resort", "Shigar Fort", "Deosai Plains", "Baltoro Glacier"],
+    bestSeason: "May–September (trekking); April–October (general)",
+    seoTitle: "Skardu Luxury Adventure Tours | K2 & Baltoro Packages",
+    seoDescription: "Skardu and K2 Base Camp tours from Pakistan. Expert-led treks, Skardu lakes, and Deosai. Book with licensed operators.",
+  },
+  {
+    slug: "naran",
+    name: "Naran & Kaghan",
+    region: "North Pakistan",
+    shortDescription: "Alpine meadows, lakes, and the iconic Saif ul Malook.",
+    description:
+      "Naran Kaghan Valley offers lush green meadows, Lake Saif ul Malook, and easy access from Islamabad. Ideal for families and first-time visitors to the northern areas.",
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
+    highlights: ["Saif ul Malook", "Lulusar Lake", "Babusar Pass", "Shogran", "Ratti Gali"],
+    bestSeason: "May–September",
+    seoTitle: "Naran Kaghan Tour Packages | Lake Saif ul Malook Tours",
+    seoDescription: "Naran and Kaghan Valley tours. Saif ul Malook, Lulusar, Babusar. Family-friendly packages from Islamabad.",
+  },
+  {
+    slug: "fairy-meadows",
+    name: "Fairy Meadows",
+    region: "North Pakistan",
+    shortDescription: "Grassland beneath Nanga Parbat — trekker's dream.",
+    description:
+      "Fairy Meadows offers one of the world's most dramatic views of Nanga Parbat. A moderate trek leads to this alpine meadow, perfect for camping and stargazing.",
+    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80",
+    highlights: ["Nanga Parbat View", "Beyal Camp", "Trekking", "Camping", "Stargazing"],
+    bestSeason: "May–October",
+    seoTitle: "Fairy Meadows Trek Packages | Nanga Parbat Tours Pakistan",
+    seoDescription: "Fairy Meadows and Nanga Parbat trekking packages. Camp under the killer mountain. Licensed guides, all-inclusive.",
+  },
+  {
+    slug: "thailand",
+    name: "Thailand",
+    region: "International",
+    shortDescription: "Temples, islands, and world-class hospitality.",
+    description:
+      "From Bangkok's Grand Palace to Phuket's beaches and Chiang Mai's mountains, Thailand offers diverse experiences for every traveler. Visa on arrival for Pakistanis.",
+    image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
+    highlights: ["Bangkok", "Phuket", "Chiang Mai", "Islands", "Temples"],
+    bestSeason: "November–March (cool season)",
+    seoTitle: "Thailand Tour Packages from Pakistan | Best Deals",
+    seoDescription: "Thailand tours from Pakistan. Bangkok, Phuket, Chiang Mai. Honeymoon and family packages. Visa support included.",
+  },
+  {
+    slug: "malaysia",
+    name: "Malaysia",
+    region: "International",
+    shortDescription: "Kuala Lumpur, Langkawi, and rainforest adventures.",
+    description:
+      "Malaysia combines modern cities, pristine islands like Langkawi, and Borneo's wildlife. Halal-friendly and excellent value for Pakistani travelers.",
+    image: "https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1200&q=80",
+    highlights: ["Kuala Lumpur", "Langkawi", "Cameron Highlands", "Penang", "Petronas Towers"],
+    bestSeason: "Year-round (avoid monsoon peaks)",
+    seoTitle: "Malaysia Tour Packages from Pakistan | KL & Langkawi",
+    seoDescription: "Malaysia tours from Pakistan. Kuala Lumpur, Langkawi, Penang. Family and honeymoon packages. Halal-friendly.",
+  },
+  {
+    slug: "sri-lanka",
+    name: "Sri Lanka",
+    region: "International",
+    shortDescription: "Tea country, wildlife, and golden beaches.",
+    description:
+      "Sri Lanka offers ancient temples, safari in Yala, tea trails in Ella, and beaches in Mirissa. Compact and incredibly diverse.",
+    image: "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80",
+    highlights: ["Sigiriya", "Ella", "Yala Safari", "Kandy", "Beaches"],
+    bestSeason: "December–March (west/south); May–September (east)",
+    seoTitle: "Sri Lanka Tour Packages from Pakistan | Safari & Beaches",
+    seoDescription: "Sri Lanka tours from Pakistan. Wildlife safari, tea country, beaches. All-inclusive packages.",
+  },
+  {
+    slug: "nepal",
+    name: "Nepal",
+    region: "International",
+    shortDescription: "Himalayas, Kathmandu, and trekking paradise.",
+    description:
+      "Home to Everest and Annapurna, Nepal is a trekker's and culture lover's dream. Kathmandu's temples and Pokhara's lakes complement the mountain adventures.",
+    image: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1200&q=80",
+    highlights: ["Kathmandu", "Pokhara", "Annapurna", "Everest View", "Chitwan Safari"],
+    bestSeason: "October–November, March–April",
+    seoTitle: "Nepal Tour Packages from Pakistan | Trekking & Culture",
+    seoDescription: "Nepal tours from Pakistan. Annapurna, Kathmandu, Pokhara. Trekking and cultural packages.",
+  },
+  {
+    slug: "azerbaijan",
+    name: "Azerbaijan",
+    region: "International",
+    shortDescription: "Baku's flame towers, mountains, and Caspian charm.",
+    description:
+      "Azerbaijan blends modern Baku with ancient fire temples and mountain villages. Easy visa for Pakistanis and a growing favorite for offbeat travel.",
+    image: "https://images.unsplash.com/photo-1605649487212-47bdab064df7?w=1200&q=80",
+    highlights: ["Baku", "Gobustan", "Gabala", "Fire Temple", "Caspian Coast"],
+    bestSeason: "April–June, September–October",
+    seoTitle: "Azerbaijan Tour Packages from Pakistan | Baku & Beyond",
+    seoDescription: "Azerbaijan tours from Pakistan. Baku, Gabala, fire temples. Visa support and guided tours.",
+  },
+];
+
+const packages = [
+  {
+    slug: "hunza-skillet-7d",
+    name: "Hunza Valley Explorer — 7 Days",
+    shortDescription: "Karimabad, Baltit Fort, Eagle's Nest, and the best of Hunza in one week.",
+    description:
+      "Our signature Hunza tour covers Karimabad, Altit and Baltit forts, Eagle's Nest viewpoint, and optional day trips to Passu and Khunjerab. Comfortable stays and expert local guides.",
+    destinationSlug: "hunza",
+    type: ["Adventure", "Road Trip", "Family"],
+    durationDays: 7,
+    difficulty: "Easy",
+    groupSize: "4–12",
+    pickupCity: "Islamabad",
+    priceFromPkr: 85000,
+    priceFromUsd: 320,
+    images: [
+      "https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80",
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
+    ],
+    highlights: ["Baltit & Altit Forts", "Eagle's Nest sunset", "Karimabad bazaar", "Local apricots & cuisine", "Optional Khunjerab Pass"],
+    itinerary: [
+      { day: 1, title: "Islamabad – Chilas", description: "Drive via Karakoram Highway, overnight Chilas." },
+      { day: 2, title: "Chilas – Karimabad", description: "Reach Hunza, check in, evening at Karimabad." },
+      { day: 3, title: "Baltit & Altit", description: "Fort visits and local heritage walk." },
+      { day: 4, title: "Eagle's Nest & Duikar", description: "Viewpoints and optional Passu day trip." },
+      { day: 5, title: "Free / Optional Khunjerab", description: "Rest day or full-day Khunjerab excursion." },
+      { day: 6, title: "Hunza – Naran or Besham", description: "Start return journey." },
+      { day: 7, title: "Return to Islamabad", description: "Arrive Islamabad by evening." },
+    ],
+    inclusions: ["Transport (AC van)", "6 nights accommodation", "Breakfast & dinner", "Guide", "Entrance fees"],
+    exclusions: ["Lunch", "Personal expenses", "Khunjerab permit if chosen"],
+    nextDepartures: ["2025-03-15", "2025-04-01", "2025-04-20"],
+    rating: 4.9,
+    reviewCount: 124,
+    tags: ["Best seller", "Family friendly"],
+    bestSeason: "March–November",
+    weather: "Cold in winter; pleasant spring and autumn.",
+    whatToPack: ["Warm layers", "Sunscreen", "Comfortable shoes", "Power bank"],
+  },
+  {
+    slug: "hunza-nagar-trek",
+    name: "Hunza & Nagar Trek — 6 Days",
+    shortDescription: "Trekking in Nagar with Rakaposhi base camp views.",
+    destinationSlug: "hunza",
+    type: ["Trekking", "Adventure"],
+    durationDays: 6,
+    difficulty: "Moderate",
+    groupSize: "6–10",
+    pickupCity: "Islamabad",
+    priceFromPkr: 72000,
+    priceFromUsd: 270,
+    images: [
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80",
+    ],
+    highlights: ["Rakaposhi views", "Nagar villages", "Trekking", "Camping"],
+    itinerary: [
+      { day: 1, title: "Islamabad – Hunza", description: "Drive to Hunza." },
+      { day: 2, title: "Transfer to trailhead", description: "Start trek, first camp." },
+      { day: 3, title: "Trek – Rakaposhi base", description: "Trek to base camp area." },
+      { day: 4, title: "Exploration & return", description: "Return to Hunza." },
+      { day: 5, title: "Hunza – rest", description: "Rest or optional sightseeing." },
+      { day: 6, title: "Return Islamabad", description: "Drive back." },
+    ],
+    inclusions: ["Transport", "Camping gear", "Meals on trek", "Guide", "Permits"],
+    exclusions: ["Personal trekking gear", "Travel insurance"],
+    rating: 4.8,
+    reviewCount: 58,
+    bestSeason: "May–October",
+    whatToPack: ["Trekking boots", "Sleeping bag", "Warm layers", "Headlamp"],
+  },
+  {
+    slug: "hunza-family-5d",
+    name: "Hunza Family Short Break — 5 Days",
+    shortDescription: "Kid-friendly Hunza in 5 days from Islamabad.",
+    destinationSlug: "hunza",
+    type: ["Family", "Road Trip"],
+    durationDays: 5,
+    difficulty: "Easy",
+    groupSize: "4–10",
+    pickupCity: "Islamabad",
+    priceFromPkr: 65000,
+    priceFromUsd: 245,
+    images: ["https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=1200&q=80"],
+    highlights: ["Family-friendly pace", "Baltit Fort", "Karimabad", "Safe transport"],
+    itinerary: [
+      { day: 1, title: "Islamabad – Besham", description: "Scenic drive, overnight Besham." },
+      { day: 2, title: "Besham – Karimabad", description: "Reach Hunza, relax." },
+      { day: 3, title: "Karimabad & forts", description: "Baltit, Altit, bazaar." },
+      { day: 4, title: "Eagle's Nest", description: "Viewpoint, return to hotel." },
+      { day: 5, title: "Karimabad – Islamabad", description: "Return drive." },
+    ],
+    inclusions: ["Transport", "4 nights accommodation", "Breakfast & dinner", "Guide"],
+    exclusions: ["Lunch", "Personal expenses"],
+    rating: 4.9,
+    reviewCount: 89,
+    tags: ["Family friendly"],
+  },
+  {
+    slug: "skardu-k2-base-camp",
+    name: "K2 Base Camp Trek — 18 Days",
+    shortDescription: "The ultimate trek to Concordia and K2 base camp.",
+    destinationSlug: "skardu",
+    type: ["Trekking", "Adventure"],
+    durationDays: 18,
+    difficulty: "Strenuous",
+    groupSize: "6–12",
+    pickupCity: "Skardu (fly from Islamabad)",
+    priceFromPkr: 285000,
+    priceFromUsd: 1050,
+    images: [
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80",
+      "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80",
+    ],
+    highlights: ["K2 Base Camp", "Concordia", "Baltoro Glacier", "Gasherbrum views"],
+    itinerary: [
+      { day: 1, title: "Islamabad – Skardu", description: "Flight to Skardu." },
+      { day: 2, title: "Skardu – Askole", description: "Drive to trailhead." },
+      { day: 3, title: "Trek to Jula", description: "Start trek." },
+      { day: 4, title: "Jula – Paiju", description: "Trek to Paiju camp." },
+      { day: 5, title: "Rest at Paiju", description: "Acclimatization." },
+      { day: 6, title: "Paiju – Khoburtse", description: "Trek on Baltoro." },
+      { day: 7, title: "Khoburtse – Urdukas", description: "Continue trek." },
+      { day: 8, title: "Urdukas – Goro II", description: "Trek to Goro." },
+      { day: 9, title: "Goro II – Concordia", description: "Reach Concordia." },
+      { day: 10, title: "Concordia – K2 BC", description: "Trek to K2 Base Camp." },
+      { day: 11, title: "Exploration", description: "Rest/explore at BC." },
+      { day: 12, title: "K2 BC – Concordia", description: "Return to Concordia." },
+      { day: 13, title: "Concordia – Goro II", description: "Start return." },
+      { day: 14, title: "Goro II – Khoburtse", description: "Trek back." },
+      { day: 15, title: "Khoburtse – Jula", description: "Continue return." },
+      { day: 16, title: "Jula – Askole", description: "End trek." },
+      { day: 17, title: "Askole – Skardu", description: "Drive to Skardu." },
+      { day: 18, title: "Skardu – Islamabad", description: "Flight to Islamabad." },
+    ],
+    inclusions: ["Domestic flights", "All meals on trek", "Camping gear", "Permits", "Experienced guide", "Porters"],
+    exclusions: ["Personal gear", "Travel insurance", "Tips"],
+    rating: 5,
+    reviewCount: 42,
+    tags: ["Premium", "Bucket list"],
+    bestSeason: "June–August",
+    whatToPack: ["Expedition-grade gear", "Sleeping bag -15°C", "Trekking boots", "High-altitude clothing"],
+  },
+  {
+    slug: "skardu-lakes-5d",
+    name: "Skardu Lakes & Shangrila — 5 Days",
+    shortDescription: "Shangrila, Lower Kachura, and Skardu sights.",
+    destinationSlug: "skardu",
+    type: ["Adventure", "Family"],
+    durationDays: 5,
+    difficulty: "Easy",
+    groupSize: "4–10",
+    pickupCity: "Islamabad (fly)",
+    priceFromPkr: 95000,
+    priceFromUsd: 360,
+    images: ["https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1200&q=80"],
+    highlights: ["Shangrila Resort", "Lower Kachura Lake", "Shigar Fort", "Skardu town"],
+    itinerary: [
+      { day: 1, title: "Islamabad – Skardu", description: "Flight, transfer to Shangrila." },
+      { day: 2, title: "Shangrila & Lower Kachura", description: "Lakes and resort." },
+      { day: 3, title: "Shigar Fort", description: "Heritage and gardens." },
+      { day: 4, title: "Free / optional Deosai", description: "Rest or day trip." },
+      { day: 5, title: "Skardu – Islamabad", description: "Flight back." },
+    ],
+    inclusions: ["Flights", "Accommodation", "Breakfast & dinner", "Guide", "Entrance fees"],
+    exclusions: ["Lunch", "Personal expenses"],
+    rating: 4.8,
+    reviewCount: 67,
+  },
+  {
+    slug: "deosai-plains-tour",
+    name: "Deosai Plains & Skardu — 6 Days",
+    shortDescription: "Land of the giants: Deosai plateau and Skardu.",
+    destinationSlug: "skardu",
+    type: ["Adventure", "Road Trip"],
+    durationDays: 6,
+    difficulty: "Moderate",
+    groupSize: "4–8",
+    pickupCity: "Islamabad",
+    priceFromPkr: 88000,
+    priceFromUsd: 330,
+    images: ["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80"],
+    highlights: ["Deosai Plains", "Sheosar Lake", "Wildlife", "Skardu"],
+    itinerary: [
+      { day: 1, title: "Islamabad – Chilas", description: "Drive KKH." },
+      { day: 2, title: "Chilas – Skardu", description: "Reach Skardu." },
+      { day: 3, title: "Skardu – Deosai", description: "Enter Deosai, camp." },
+      { day: 4, title: "Deosai – Sheosar", description: "Sheosar Lake, wildlife." },
+      { day: 5, title: "Deosai – Skardu", description: "Return to Skardu." },
+      { day: 6, title: "Skardu – Islamabad", description: "Fly or drive back." },
+    ],
+    inclusions: ["Transport", "Camping/guesthouse", "Meals", "Guide"],
+    exclusions: ["Flights if chosen", "Personal expenses"],
+    rating: 4.7,
+    reviewCount: 34,
+    bestSeason: "June–September",
+  },
+  {
+    slug: "naran-kaghan-5d",
+    name: "Naran Kaghan Valley — 5 Days",
+    shortDescription: "Saif ul Malook, Lulusar, and Babusar Pass.",
+    destinationSlug: "naran",
+    type: ["Adventure", "Family", "Road Trip"],
+    durationDays: 5,
+    difficulty: "Easy",
+    groupSize: "4–12",
+    pickupCity: "Islamabad",
+    priceFromPkr: 45000,
+    priceFromUsd: 170,
+    images: ["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80"],
+    highlights: ["Lake Saif ul Malook", "Lulusar Lake", "Babusar Pass", "Shogran", "Naran bazaar"],
+    itinerary: [
+      { day: 1, title: "Islamabad – Naran", description: "Drive to Naran via Kaghan." },
+      { day: 2, title: "Saif ul Malook", description: "Jeep and boat at lake." },
+      { day: 3, title: "Lulusar & Babusar", description: "Day trip to Lulusar/Babusar." },
+      { day: 4, title: "Shogran / Ratti Gali", description: "Meadows and viewpoints." },
+      { day: 5, title: "Naran – Islamabad", description: "Return." },
+    ],
+    inclusions: ["Transport", "4 nights", "Breakfast & dinner", "Guide", "Boat at Saif ul Malook"],
+    exclusions: ["Lunch", "Personal expenses"],
+    rating: 4.8,
+    reviewCount: 156,
+    tags: ["Best value"],
+    bestSeason: "May–September",
+  },
+  {
+    slug: "naran-family-4d",
+    name: "Naran Family Weekend — 4 Days",
+    shortDescription: "Short Naran break with Saif ul Malook.",
+    destinationSlug: "naran",
+    type: ["Family", "Road Trip"],
+    durationDays: 4,
+    difficulty: "Easy",
+    groupSize: "4–8",
+    pickupCity: "Islamabad",
+    priceFromPkr: 38000,
+    priceFromUsd: 145,
+    images: ["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80"],
+    highlights: ["Saif ul Malook", "Naran", "Family-friendly"],
+    itinerary: [
+      { day: 1, title: "Islamabad – Naran", description: "Drive, overnight Naran." },
+      { day: 2, title: "Saif ul Malook", description: "Full day at lake." },
+      { day: 3, title: "Naran – local", description: "Relax or short excursions." },
+      { day: 4, title: "Naran – Islamabad", description: "Return." },
+    ],
+    inclusions: ["Transport", "3 nights", "Breakfast & dinner", "Guide"],
+    exclusions: ["Lunch", "Personal expenses"],
+    rating: 4.7,
+    reviewCount: 98,
+  },
+  {
+    slug: "fairy-meadows-trek",
+    name: "Fairy Meadows & Nanga Parbat — 5 Days",
+    shortDescription: "Trek to Fairy Meadows with views of Nanga Parbat.",
+    destinationSlug: "fairy-meadows",
+    type: ["Trekking", "Adventure"],
+    durationDays: 5,
+    difficulty: "Moderate",
+    groupSize: "6–10",
+    pickupCity: "Islamabad",
+    priceFromPkr: 55000,
+    priceFromUsd: 205,
+    images: ["https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80"],
+    highlights: ["Fairy Meadows", "Nanga Parbat", "Beyal camp", "Trekking"],
+    itinerary: [
+      { day: 1, title: "Islamabad – Raikot", description: "Drive to Raikot bridge." },
+      { day: 2, title: "Jeep + Trek – Fairy Meadows", description: "Jeep to Tato, trek to Fairy Meadows." },
+      { day: 3, title: "Beyal / Base Camp", description: "Day hike to Beyal or BC view." },
+      { day: 4, title: "Fairy Meadows – Raikot", description: "Trek and jeep back." },
+      { day: 5, title: "Raikot – Islamabad", description: "Drive to Islamabad." },
+    ],
+    inclusions: ["Transport", "Jeep", "Camping/hut", "Meals", "Guide", "Permits"],
+    exclusions: ["Personal gear", "Travel insurance"],
+    rating: 4.9,
+    reviewCount: 76,
+    bestSeason: "May–October",
+    whatToPack: ["Trekking boots", "Warm layers", "Sleeping bag", "Headlamp"],
+  },
+  {
+    slug: "thailand-classic-7d",
+    name: "Thailand Classic — Bangkok & North 7 Days",
+    shortDescription: "Bangkok temples, Chiang Mai, and optional beach extension.",
+    destinationSlug: "thailand",
+    type: ["Adventure", "Family"],
+    durationDays: 7,
+    difficulty: "Easy",
+    groupSize: "4–12",
+    pickupCity: "Bangkok (flight not included)",
+    priceFromPkr: 185000,
+    priceFromUsd: 650,
+    images: ["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80"],
+    highlights: ["Grand Palace", "Wat Pho", "Chiang Mai", "Doi Suthep", "Markets"],
+    itinerary: [
+      { day: 1, title: "Bangkok arrival", description: "Transfer, orientation." },
+      { day: 2, title: "Grand Palace & temples", description: "Grand Palace, Wat Pho, Wat Arun." },
+      { day: 3, title: "Bangkok – Chiang Mai", description: "Flight, evening market." },
+      { day: 4, title: "Doi Suthep & elephants", description: "Temple and ethical sanctuary visit." },
+      { day: 5, title: "Chiang Mai – free", description: "Cooking class or rest." },
+      { day: 6, title: "Chiang Mai – Bangkok", description: "Return to Bangkok." },
+      { day: 7, title: "Departure", description: "Transfer to airport." },
+    ],
+    inclusions: ["6 nights accommodation", "Breakfast", "Tours as per itinerary", "Domestic flight", "Entrance fees"],
+    exclusions: ["Intl flights", "Visa", "Lunch/dinner unless stated"],
+    rating: 4.8,
+    reviewCount: 92,
+    tags: ["Visa support"],
+  },
+  {
+    slug: "thailand-honeymoon-6d",
+    name: "Thailand Honeymoon — Bangkok & Beach 6 Days",
+    shortDescription: "Romantic mix of Bangkok and beach (Phuket/Krabi).",
+    destinationSlug: "thailand",
+    type: ["Honeymoon", "Adventure"],
+    durationDays: 6,
+    difficulty: "Easy",
+    groupSize: "2",
+    pickupCity: "Bangkok",
+    priceFromPkr: 195000,
+    priceFromUsd: 690,
+    images: ["https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80"],
+    highlights: ["Bangkok luxury stay", "Beach resort", "Private experiences", "Spa option"],
+    itinerary: [
+      { day: 1, title: "Bangkok", description: "Arrival, romantic dinner cruise." },
+      { day: 2, title: "Bangkok", description: "Temples, spa." },
+      { day: 3, title: "Bangkok – Phuket", description: "Flight, beach resort." },
+      { day: 4, title: "Beach", description: "Free or island tour." },
+      { day: 5, title: "Beach", description: "Relax, optional spa." },
+      { day: 6, title: "Departure", description: "Transfer to airport." },
+    ],
+    inclusions: ["5 nights", "Breakfast", "Dinner cruise", "Transfers", "Domestic flight"],
+    exclusions: ["Intl flights", "Visa", "Lunch", "Spa"],
+    rating: 4.9,
+    reviewCount: 54,
+    tags: ["Honeymoon"],
+  },
+  {
+    slug: "malaysia-highlights-6d",
+    name: "Malaysia Highlights — KL & Langkawi 6 Days",
+    shortDescription: "Kuala Lumpur and Langkawi island in one trip.",
+    destinationSlug: "malaysia",
+    type: ["Adventure", "Family"],
+    durationDays: 6,
+    difficulty: "Easy",
+    groupSize: "4–10",
+    pickupCity: "Kuala Lumpur",
+    priceFromPkr: 165000,
+    priceFromUsd: 580,
+    images: ["https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1200&q=80"],
+    highlights: ["Petronas Towers", "Batu Caves", "Langkawi", "Cable car", "Halal dining"],
+    itinerary: [
+      { day: 1, title: "KL arrival", description: "Transfer, Petronas view." },
+      { day: 2, title: "Batu Caves & city", description: "Caves, markets." },
+      { day: 3, title: "KL – Langkawi", description: "Flight, check-in." },
+      { day: 4, title: "Langkawi", description: "Cable car, island tour." },
+      { day: 5, title: "Langkawi", description: "Beach or mangrove." },
+      { day: 6, title: "Departure", description: "Transfer to airport." },
+    ],
+    inclusions: ["5 nights", "Breakfast", "Tours", "Domestic flight", "Entrance fees"],
+    exclusions: ["Intl flights", "Visa", "Lunch/dinner"],
+    rating: 4.8,
+    reviewCount: 71,
+    tags: ["Halal-friendly"],
+  },
+  {
+    slug: "malaysia-family-7d",
+    name: "Malaysia Family — KL, Cameron & Penang 7 Days",
+    shortDescription: "Cities, highlands, and Penang for families.",
+    destinationSlug: "malaysia",
+    type: ["Family", "Adventure"],
+    durationDays: 7,
+    difficulty: "Easy",
+    groupSize: "4–10",
+    pickupCity: "Kuala Lumpur",
+    priceFromPkr: 175000,
+    priceFromUsd: 620,
+    images: ["https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=1200&q=80"],
+    highlights: ["KL", "Cameron Highlands", "Penang", "Tea estates", "Street food"],
+    itinerary: [
+      { day: 1, title: "KL", description: "Arrival." },
+      { day: 2, title: "KL", description: "City tour." },
+      { day: 3, title: "Cameron Highlands", description: "Drive, tea estates." },
+      { day: 4, title: "Cameron", description: "Strawberry farm, butterflies." },
+      { day: 5, title: "Cameron – Penang", description: "Drive to Penang." },
+      { day: 6, title: "Penang", description: "George Town, street food." },
+      { day: 7, title: "Departure", description: "Transfer to airport." },
+    ],
+    inclusions: ["6 nights", "Breakfast", "Tours", "Transport between cities"],
+    exclusions: ["Intl flights", "Visa", "Lunch/dinner"],
+    rating: 4.7,
+    reviewCount: 48,
+  },
+  {
+    slug: "sri-lanka-circle-8d",
+    name: "Sri Lanka Circle — 8 Days",
+    shortDescription: "Sigiriya, Kandy, Ella, Yala, and beaches.",
+    destinationSlug: "sri-lanka",
+    type: ["Adventure", "Family"],
+    durationDays: 8,
+    difficulty: "Moderate",
+    groupSize: "4–10",
+    pickupCity: "Colombo",
+    priceFromPkr: 195000,
+    priceFromUsd: 690,
+    images: ["https://images.unsplash.com/photo-1519681393784-d120267933ba?w=1200&q=80"],
+    highlights: ["Sigiriya Rock", "Kandy", "Ella", "Yala Safari", "Mirissa"],
+    itinerary: [
+      { day: 1, title: "Colombo – Sigiriya", description: "Transfer, Dambulla cave." },
+      { day: 2, title: "Sigiriya", description: "Rock fortress." },
+      { day: 3, title: "Sigiriya – Kandy", description: "Temple of the Tooth." },
+      { day: 4, title: "Kandy – Ella", description: "Train or drive, tea country." },
+      { day: 5, title: "Ella", description: "Nine Arch, Little Adam's Peak." },
+      { day: 6, title: "Ella – Yala", description: "Safari." },
+      { day: 7, title: "Yala – Mirissa", description: "Beach." },
+      { day: 8, title: "Departure", description: "Transfer to Colombo airport." },
+    ],
+    inclusions: ["7 nights", "Breakfast", "Safari", "Tours", "Transport"],
+    exclusions: ["Intl flights", "Visa", "Lunch/dinner"],
+    rating: 4.9,
+    reviewCount: 63,
+  },
+  {
+    slug: "nepal-annapurna-10d",
+    name: "Nepal Annapurna Circuit Highlights — 10 Days",
+    shortDescription: "Kathmandu, Pokhara, and Annapurna region trek.",
+    destinationSlug: "nepal",
+    type: ["Trekking", "Adventure"],
+    durationDays: 10,
+    difficulty: "Moderate",
+    groupSize: "4–10",
+    pickupCity: "Kathmandu",
+    priceFromPkr: 165000,
+    priceFromUsd: 580,
+    images: ["https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1200&q=80"],
+    highlights: ["Kathmandu", "Pokhara", "Annapurna views", "Poon Hill or short trek"],
+    itinerary: [
+      { day: 1, title: "Kathmandu", description: "Arrival, Swayambhunath." },
+      { day: 2, title: "Kathmandu", description: "Patan, Boudhanath." },
+      { day: 3, title: "Kathmandu – Pokhara", description: "Drive or fly, lakeside." },
+      { day: 4, title: "Pokhara – trek start", description: "Drive to trailhead, start trek." },
+      { day: 5, title: "Trek", description: "Village stay." },
+      { day: 6, title: "Trek", description: "Viewpoints." },
+      { day: 7, title: "Trek – Pokhara", description: "Return to Pokhara." },
+      { day: 8, title: "Pokhara", description: "Rest, optional paragliding." },
+      { day: 9, title: "Pokhara – Kathmandu", description: "Return." },
+      { day: 10, title: "Departure", description: "Airport transfer." },
+    ],
+    inclusions: ["9 nights", "Breakfast", "Trek permits", "Guide", "Transport"],
+    exclusions: ["Intl flights", "Visa", "Lunch/dinner on trek", "Personal gear"],
+    rating: 4.8,
+    reviewCount: 55,
+    bestSeason: "Oct–Nov, Mar–Apr",
+  },
+  {
+    slug: "nepal-highlights-6d",
+    name: "Nepal Highlights — Kathmandu & Pokhara 6 Days",
+    shortDescription: "Culture and lakes without long trekking.",
+    destinationSlug: "nepal",
+    type: ["Adventure", "Family"],
+    durationDays: 6,
+    difficulty: "Easy",
+    groupSize: "4–10",
+    pickupCity: "Kathmandu",
+    priceFromPkr: 125000,
+    priceFromUsd: 440,
+    images: ["https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=1200&q=80"],
+    highlights: ["Kathmandu temples", "Pokhara", "Patan", "Boudhanath", "Phewa Lake"],
+    itinerary: [
+      { day: 1, title: "Kathmandu", description: "Arrival." },
+      { day: 2, title: "Kathmandu", description: "Swayambhunath, Patan, Boudhanath." },
+      { day: 3, title: "Kathmandu – Pokhara", description: "Drive/fly, Phewa Lake." },
+      { day: 4, title: "Pokhara", description: "Sarangkot, Devi's Fall." },
+      { day: 5, title: "Pokhara – Kathmandu", description: "Return." },
+      { day: 6, title: "Departure", description: "Transfer." },
+    ],
+    inclusions: ["5 nights", "Breakfast", "Tours", "Transport"],
+    exclusions: ["Intl flights", "Visa", "Lunch/dinner"],
+    rating: 4.7,
+    reviewCount: 82,
+  },
+  {
+    slug: "azerbaijan-baku-5d",
+    name: "Azerbaijan — Baku & Beyond 5 Days",
+    shortDescription: "Baku, Gobustan, and fire temple.",
+    destinationSlug: "azerbaijan",
+    type: ["Adventure", "Road Trip"],
+    durationDays: 5,
+    difficulty: "Easy",
+    groupSize: "4–10",
+    pickupCity: "Baku",
+    priceFromPkr: 145000,
+    priceFromUsd: 510,
+    images: ["https://images.unsplash.com/photo-1605649487212-47bdab064df7?w=1200&q=80"],
+    highlights: ["Baku Old City", "Flame Towers", "Gobustan", "Fire Temple", "Ateshgah"],
+    itinerary: [
+      { day: 1, title: "Baku", description: "Arrival, Flame Towers view." },
+      { day: 2, title: "Baku", description: "Old City, Maiden Tower." },
+      { day: 3, title: "Gobustan", description: "Petroglyphs, mud volcanoes." },
+      { day: 4, title: "Fire Temple & Ateshgah", description: "Day trip." },
+      { day: 5, title: "Departure", description: "Transfer to airport." },
+    ],
+    inclusions: ["4 nights", "Breakfast", "Tours", "Entrance fees"],
+    exclusions: ["Intl flights", "Visa", "Lunch/dinner"],
+    rating: 4.8,
+    reviewCount: 38,
+    tags: ["Visa support"],
+  },
+];
+
+const trustBadges = [
+  { label: "Licensed", sublabel: "Registered travel company" },
+  { label: "Experienced Guides", sublabel: "Local experts on every trip" },
+  { label: "Thousands Served", sublabel: "Happy travelers since 2018" },
+  { label: "No Hidden Charges", sublabel: "Transparent pricing" },
+  { label: "Support Throughout", sublabel: "From booking to return" },
+];
+const whatsappNumber = "92355569982";
+const contactEmail = "hello@sarerahtravel.com";
+
+async function main() {
+  console.log("Seeding destinations...");
+  const destSlugToId = new Map<string, string>();
+  for (const d of destinations) {
+    const { slug, name, region, shortDescription, description, image, highlights, bestSeason, seoTitle, seoDescription } = d;
+    const { data, error } = await supabase
+      .from("destinations")
+      .upsert(
+        {
+          slug,
+          name,
+          region,
+          short_description: shortDescription,
+          description,
+          image_url: image,
+          highlights,
+          best_season: bestSeason,
+          seo_title: seoTitle,
+          seo_description: seoDescription,
+        },
+        { onConflict: "slug" }
+      )
+      .select("id, slug")
+      .single();
+    if (error) throw error;
+    destSlugToId.set(slug, data.id);
+  }
+
+  console.log("Seeding packages, itineraries, and images...");
+  const pkgSlugToId = new Map<string, string>();
+  for (const p of packages) {
+    const destinationId = destSlugToId.get(p.destinationSlug);
+    if (!destinationId) throw new Error(`Unknown destination "${p.destinationSlug}" for package "${p.slug}"`);
+
+    const { data, error } = await supabase
+      .from("packages")
+      .upsert(
+        {
+          slug: p.slug,
+          name: p.name,
+          short_description: p.shortDescription,
+          description: p.description ?? null,
+          destination_id: destinationId,
+          type: p.type,
+          duration_days: p.durationDays,
+          difficulty: p.difficulty,
+          group_size: p.groupSize,
+          pickup_city: p.pickupCity,
+          price_from_pkr: p.priceFromPkr,
+          price_from_usd: p.priceFromUsd ?? null,
+          currency: "PKR",
+          highlights: p.highlights,
+          inclusions: p.inclusions,
+          exclusions: p.exclusions,
+          next_departures: p.nextDepartures ?? [],
+          rating: p.rating ?? null,
+          review_count: p.reviewCount ?? 0,
+          tags: p.tags ?? [],
+          what_to_pack: p.whatToPack ?? [],
+          best_season: p.bestSeason ?? null,
+          weather: p.weather ?? null,
+        },
+        { onConflict: "slug" }
+      )
+      .select("id, slug")
+      .single();
+    if (error) throw error;
+    pkgSlugToId.set(p.slug, data.id);
+
+    await supabase.from("package_itineraries").delete().eq("package_id", data.id);
+    if (p.itinerary.length > 0) {
+      const { error: itErr } = await supabase.from("package_itineraries").insert(
+        p.itinerary.map((day, i) => ({
+          package_id: data.id,
+          day: day.day,
+          title: day.title,
+          description: day.description,
+          sort_order: i,
+        }))
+      );
+      if (itErr) throw itErr;
+    }
+
+    await supabase.from("package_images").delete().eq("package_id", data.id);
+    if (p.images.length > 0) {
+      const { error: imgErr } = await supabase
+        .from("package_images")
+        .insert(p.images.map((url, i) => ({ package_id: data.id, url, sort_order: i })));
+      if (imgErr) throw imgErr;
+    }
+  }
+
+  console.log("Seeding site settings...");
+  const { error: settingsErr } = await supabase.from("site_settings").upsert(
+    [
+      { key: "trust_badges", value: trustBadges },
+      { key: "whatsapp_number", value: whatsappNumber },
+      { key: "contact_email", value: contactEmail },
+    ],
+    { onConflict: "key" }
+  );
+  if (settingsErr) throw settingsErr;
+
+  console.log(`Done. Seeded ${destinations.length} destinations, ${packages.length} packages.`);
+}
+
+main().catch((err) => {
+  console.error("Seed failed:", err);
+  process.exit(1);
+});

@@ -1,9 +1,35 @@
 # Deployment Instructions — Sarerah Travel
 
+## Architecture
+
+Content (destinations, packages, itineraries, images, leads) lives in **Supabase** (Postgres + Storage). Public pages read it via the anon key (Row Level Security restricts that key to `SELECT` on content tables and `INSERT` on leads). The `/admin` area lets you manage content and is gated by a single hardcoded username/password (MVP-level auth, see below). Reviews and the homepage rating are pulled live from the **Google Places API** — not stored in the database.
+
 ## Prerequisites
 
 - Node.js 18+
-- npm (or yarn/pnpm)
+- npm
+- A free [Supabase](https://supabase.com) project
+
+## One-time Supabase setup
+
+1. Create a project at [supabase.com](https://supabase.com).
+2. In the SQL Editor, run `supabase/migrations/0001_init.sql` — creates all tables, RLS policies, and the `trip-images` storage bucket.
+3. In **Project Settings → API**, copy the Project URL, `anon` public key, and `service_role` key into `.env.local` (see below).
+4. Run the one-time content seed: `npm run seed`. This loads the site's original destinations/packages/itineraries/images into your new database.
+
+## Environment variables
+
+Create `.env.local` (and set the same in your hosting dashboard for production):
+
+| Variable | Description |
+|----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL. |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Public anon key. Safe to expose; RLS restricts what it can do. |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Server-only.** Bypasses RLS. Used by admin Server Actions and the upload route. Never expose to the browser. |
+| `ADMIN_USERNAME` / `ADMIN_PASSWORD` | Single admin account for `/admin/login`. Use a strong password. |
+| `ADMIN_SESSION_SECRET` | Random 32+ char string signing the admin session cookie (`openssl rand -hex 32`). |
+| `NEXT_PUBLIC_SITE_URL` | Your live site URL, used for sitemap and JSON-LD. |
+| `GOOGLE_PLACES_API_KEY` / `GOOGLE_PLACES_PLACE_ID` | Optional. Powers the Reviews page and homepage rating via the Google Places API. Site works without it (reviews section just doesn't render). |
 
 ## Local development
 
@@ -12,16 +38,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
-## Environment variables
-
-Create `.env.local` (and in your hosting dashboard for production):
-
-| Variable | Description |
-|----------|-------------|
-| `ADMIN_SECRET` | Optional. If set, `/api/leads?key=ADMIN_SECRET` is required to view leads. Use a strong random string. |
-| `NEXT_PUBLIC_SITE_URL` | Your live site URL (e.g. `https://sarerahtravel.com`) for sitemap and JSON-LD. |
+Open [http://localhost:3000](http://localhost:3000). Admin is at [http://localhost:3000/admin](http://localhost:3000/admin/login).
 
 ## Production build
 
@@ -32,41 +49,36 @@ npm start
 
 ## Deploy to Vercel (recommended)
 
-**Why Vercel?** Vercel is built by the Next.js team and is the best fit for this stack: zero-config deploys, global CDN, and automatic previews per branch. For this site, most pages are **statically generated** (home, packages list, destinations, about, reviews, blog, contact, FAQ), so they are served from the edge with **no cold start** — instant load worldwide. Only the first request to a dynamic route (e.g. `/api/leads` or a package/destination detail page that hasn’t been cached) may see a short serverless cold start (usually &lt;1s); the main browsing experience is static and fast.
-
 1. Push the repo to GitHub/GitLab/Bitbucket.
 2. Go to [vercel.com](https://vercel.com) → **New Project** → Import the repo.
-3. Framework preset: **Next.js**. Root directory: `.` (or your repo root).
-4. Add environment variables: `ADMIN_SECRET`, `NEXT_PUBLIC_SITE_URL`.
-5. **Deploy.** Vercel runs `npm run build` and serves the app.
-6. **Analytics & Speed Insights:** In the Vercel dashboard, open your project → **Analytics** tab → enable **Web Analytics**. The app already includes `@vercel/analytics` and `@vercel/speed-insights` in the layout; data appears in production after the first deploy. Speed Insights shows Core Web Vitals (LCP, FID, CLS) per page.
+3. Framework preset: **Next.js**.
+4. Add all the environment variables listed above.
+5. **Deploy.**
+6. **Analytics & Speed Insights:** In the Vercel dashboard → your project → **Analytics** tab → enable **Web Analytics**. Already wired into the layout.
 
-## Lead storage (production)
+Content pages render dynamically (server-rendered per request against Supabase) rather than statically, since content can change at any time via the admin. This keeps every page instantly consistent with the latest edits — no manual revalidation needed — at the cost of a small serverless render on each request instead of edge-cached HTML. For a site this size that's the right trade-off; if traffic grows, individual routes can opt into ISR (`export const revalidate = N`) later.
 
-The demo stores leads in `data/leads.json` in **development** only. In production (e.g. Vercel) the filesystem is read-only, so you must:
+## Admin
 
-- **Option A — Database:** Use PostgreSQL (e.g. Vercel Postgres, Supabase, Neon) or MongoDB. Add a table/collection for leads and update `src/app/api/leads/route.ts` to insert there instead of writing to a file. Use the same shape as the `Lead` type in `src/types/index.ts`.
-- **Option B — Email:** On each POST to `/api/leads`, send an email (e.g. via Resend, SendGrid) to your inbox with the lead details.
-- **Option C — Google Sheets:** Use the Google Sheets API or a service like SheetDB to append a row per lead.
+- **URL:** `https://yourdomain.com/admin/login`
+- Log in with `ADMIN_USERNAME` / `ADMIN_PASSWORD`. Manage destinations, packages (itinerary, images, featured flag), site settings (WhatsApp number, contact email, trust badges), and view/delete leads.
+- This is an MVP auth scheme: one shared account, no per-user roles or audit log. Upgrade to Supabase Auth (or similar) if you need multiple admin users later.
 
-After implementing, keep the GET `/api/leads` for your admin page (protected with `ADMIN_SECRET`), reading from the same DB or a separate export.
+## Images
 
-## Post-deploy checklist
+Admin forms accept either a pasted URL or a direct upload (stored in the Supabase `trip-images` bucket, publicly readable). Existing Unsplash placeholder URLs keep working as-is.
 
-1. **WhatsApp number:** Replace `923001234567` everywhere with your real number (country code, no +). Search for `923001234567` and `wa.me/923001234567` in the codebase (e.g. `src/lib/whatsapp.ts`, Header, Footer, CTAs).
-2. **Contact email:** Replace `hello@sarerahtravel.com` in Footer and Contact page.
-3. **Sitemap & robots:** In `src/app/sitemap.ts` and `src/app/robots.ts`, set `BASE` (or use `NEXT_PUBLIC_SITE_URL`) to your real domain.
-4. **Trust badges:** Edit `src/data/trust.ts` to match your real stats (e.g. review count, rating).
-5. **Images:** Replace Unsplash URLs in `src/data/` with your own images (or keep for placeholder). Ensure `next.config.ts` `images.domains` includes any external image host you use.
+## Google Reviews
 
-## Admin (leads list)
+Google's Places API returns at most 5 "most relevant" reviews per business (chosen by Google, not filterable) and requires a Google Cloud project with billing enabled. Set `GOOGLE_PLACES_API_KEY` and `GOOGLE_PLACES_PLACE_ID` to enable; without them the Reviews page and homepage rating badge simply don't render.
 
-- **URL:** `https://yourdomain.com/admin?key=YOUR_ADMIN_SECRET`
-- Set `ADMIN_SECRET` in env and open the URL with that query param to view the list. In production, wire the admin page to your DB instead of the file.
+## Leads
+
+Submitted via the contact form, homepage lead form, and itinerary request form — all POST to `/api/leads`, which inserts into the `leads` table (RLS allows public insert only; reading/deleting requires the admin panel).
 
 ## SEO
 
 - Metadata and OpenGraph are set per page.
-- Sitemap: `/sitemap.xml` (auto-generated).
+- Sitemap: `/sitemap.xml` (auto-generated from live destinations/packages).
 - Robots: `/robots.txt` (allows all except `/admin` and `/api/`).
 - JSON-LD: TravelAgency on the site, Product (tour) on each package page.

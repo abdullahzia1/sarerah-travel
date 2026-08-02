@@ -12,6 +12,7 @@ export type DestinationSlug =
 export type PackageType = "Adventure" | "Family" | "Honeymoon" | "Trekking" | "Road Trip" | "Group Tour";
 
 export interface Destination {
+  id: string;
   slug: DestinationSlug | string;
   name: string;
   region: "North Pakistan" | "International";
@@ -26,7 +27,22 @@ export interface Destination {
   seoDescription?: string;
 }
 
+export interface PackageItineraryDay {
+  id?: string;
+  day: number;
+  title: string;
+  description: string;
+}
+
+export interface PackageImage {
+  id?: string;
+  url: string;
+  alt?: string;
+  sortOrder?: number;
+}
+
 export interface Package {
+  id: string;
   slug: string;
   name: string;
   shortDescription: string;
@@ -43,7 +59,7 @@ export interface Package {
   currency?: "PKR" | "USD";
   images: string[];
   highlights: string[];
-  itinerary: { day: number; title: string; description: string }[];
+  itinerary: PackageItineraryDay[];
   inclusions: string[];
   exclusions: string[];
   nextDepartures?: string[];
@@ -54,16 +70,15 @@ export interface Package {
   whatToPack?: string[];
   bestSeason?: string;
   weather?: string;
+  isFeatured?: boolean;
 }
 
+/** Sourced live from Google Places -- not stored in our database. */
 export interface Review {
-  id: string;
   author: string;
-  location?: string;
   rating: number;
   text: string;
   date: string;
-  packageSlug?: string;
   avatar?: string;
 }
 
@@ -82,19 +97,14 @@ export interface Lead {
   timestamp: string;
 }
 
-export interface BlogPost {
-  slug: string;
-  title: string;
-  excerpt: string;
-  content: string;
-  image: string;
-  date: string;
-  author?: string;
-  tags?: string[];
-}
-
 export interface TrustBadge {
   label: string;
   sublabel?: string;
   icon?: string;
+}
+
+export interface SiteSettings {
+  trustBadges: TrustBadge[];
+  whatsappNumber: string;
+  contactEmail: string;
 }

@@ -1,12 +1,18 @@
-export function TravelAgencyJsonLd() {
+export function TravelAgencyJsonLd({
+  whatsappNumber,
+  contactEmail,
+}: {
+  whatsappNumber: string;
+  contactEmail: string;
+}) {
   const schema = {
     "@context": "https://schema.org",
     "@type": "TravelAgency",
     name: "Sarerah Travel",
     description: "Premium travel agency from Pakistan. North Pakistan & Asia tours. Licensed guides, no hidden charges.",
-    url: "https://sarerahtravel.com",
-    telephone: "+92-300-1234567",
-    email: "hello@sarerahtravel.com",
+    url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://sarerahtravel.com",
+    telephone: `+${whatsappNumber}`,
+    email: contactEmail,
     address: {
       "@type": "PostalAddress",
       addressCountry: "PK",

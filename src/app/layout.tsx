@@ -8,6 +8,8 @@ import { MobileStickyBar } from "@/components/cta/MobileStickyBar";
 import { TravelAgencyJsonLd } from "@/components/seo/JsonLd";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { getSiteSettings } from "@/data/settings";
+import { SiteSettingsProvider } from "@/lib/site-settings-context";
 
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -41,22 +43,32 @@ export const viewport = {
   maximumScale: 5,
 };
 
-export default function RootLayout({
+// Every page reads live content from Supabase (this layout itself fetches
+// site settings), so render everything per-request rather than attempting
+// static generation -- keeps admin edits instantly visible and avoids the
+// build depending on Supabase being reachable at build time.
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html lang="en">
       <body className={`${outfit.variable} ${dmSans.variable} min-w-0 overflow-x-hidden font-sans antialiased`}>
-        <TravelAgencyJsonLd />
-        <Header />
-        <main className="min-h-screen">{children}</main>
-        <Footer />
-        <WhatsAppSticky />
-        <MobileStickyBar />
-        <Analytics />
-        <SpeedInsights />
+        <SiteSettingsProvider settings={settings}>
+          <TravelAgencyJsonLd whatsappNumber={settings.whatsappNumber} contactEmail={settings.contactEmail} />
+          <Header />
+          <main className="min-h-screen">{children}</main>
+          <Footer settings={settings} />
+          <WhatsAppSticky />
+          <MobileStickyBar />
+          <Analytics />
+          <SpeedInsights />
+        </SiteSettingsProvider>
       </body>
     </html>
   );

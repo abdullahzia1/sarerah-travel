@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { formatPricePkr } from "@/lib/utils";
-import { getPackageWhatsAppMessage } from "@/lib/whatsapp";
+import { buildWhatsAppUrl, getPackageWhatsAppMessage } from "@/lib/whatsapp";
+import { useSiteSettings } from "@/lib/site-settings-context";
 import type { Package } from "@/types";
 
 const FALLBACK_IMAGE =
@@ -16,8 +17,8 @@ interface PackageCardProps {
 
 export function PackageCard({ pkg }: PackageCardProps) {
   const [imgError, setImgError] = useState(false);
-  const whatsappMessage = getPackageWhatsAppMessage(pkg.name);
-  const whatsappUrl = `https://wa.me/923001234567?text=${encodeURIComponent(whatsappMessage)}`;
+  const { whatsappNumber } = useSiteSettings();
+  const whatsappUrl = buildWhatsAppUrl(whatsappNumber, getPackageWhatsAppMessage(pkg.name));
   const imageSrc = pkg.images?.[0];
   const useFallback = !imageSrc || imgError;
 

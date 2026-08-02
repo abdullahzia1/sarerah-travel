@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { PackagesList } from "./PackagesList";
 import { PackagesFilters } from "./PackagesFilters";
+import { getAllPackages } from "@/data/packages";
+import { getAllDestinations } from "@/data/destinations";
 
 export const metadata = {
   title: "Tour Packages",
@@ -8,7 +10,9 @@ export const metadata = {
     "Browse Hunza, Skardu, Naran, Fairy Meadows, Thailand, Malaysia, Sri Lanka, Nepal & Azerbaijan tour packages. Filter by destination, duration, budget.",
 };
 
-export default function PackagesPage() {
+export default async function PackagesPage() {
+  const [packages, destinations] = await Promise.all([getAllPackages(), getAllDestinations()]);
+
   return (
     <div className="pb-24 md:pb-12">
       <div className="border-b border-stone-200 bg-white py-8">
@@ -20,9 +24,9 @@ export default function PackagesPage() {
         </div>
       </div>
       <Suspense fallback={<div className="min-h-[120px] p-8 text-center text-stone-500">Loading…</div>}>
-        <PackagesFilters />
+        <PackagesFilters destinations={destinations} />
         <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <PackagesList />
+          <PackagesList packages={packages} />
         </div>
       </Suspense>
       <div className="h-20 md:hidden" aria-hidden />
