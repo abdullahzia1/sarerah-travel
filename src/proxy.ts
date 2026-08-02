@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ADMIN_SESSION_COOKIE, verifySessionToken } from "@/lib/admin-auth";
 
-// Node.js runtime (not Edge) so we can use Node's crypto in admin-auth.ts.
-export const runtime = "nodejs";
-
-export function middleware(request: NextRequest) {
+// Proxy defaults to the Node.js runtime (Next.js 16+), which is what lets
+// admin-auth.ts use Node's crypto module here.
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   if (pathname === "/admin/login") {
