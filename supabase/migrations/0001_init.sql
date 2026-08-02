@@ -72,11 +72,27 @@ create table package_images (
 create index package_images_package_id_idx on package_images(package_id);
 
 -- Flexible key/value store for small site-wide content (trust badges,
--- WhatsApp number, contact email, etc.) that doesn't warrant its own table.
--- Reviews are sourced live from the Google Places API, not stored here.
+-- WhatsApp number, contact email, cached Google rating, etc.) that doesn't
+-- warrant its own table.
 create table site_settings (
   key text primary key,
   value jsonb not null
+);
+
+-- Local cache of Google Places reviews, refreshed by a weekly cron job (see
+-- src/lib/reviews-sync.ts) instead of calling the Places API on every page
+-- view. google_key de-dupes across syncs; is_hidden lets admin moderate
+-- which of Google's returned reviews actually show on the site.
+create table reviews (
+  id uuid primary key default gen_random_uuid(),
+  google_key text unique not null,
+  author text not null,
+  rating int not null check (rating between 1 and 5),
+  text text not null,
+  date timestamptz not null,
+  avatar_url text,
+  is_hidden boolean not null default false,
+  synced_at timestamptz not null default now()
 );
 
 create table leads (
@@ -120,6 +136,7 @@ alter table packages enable row level security;
 alter table package_itineraries enable row level security;
 alter table package_images enable row level security;
 alter table site_settings enable row level security;
+alter table reviews enable row level security;
 alter table leads enable row level security;
 
 create policy "public read destinations" on destinations for select using (true);
@@ -127,6 +144,7 @@ create policy "public read packages" on packages for select using (true);
 create policy "public read package_itineraries" on package_itineraries for select using (true);
 create policy "public read package_images" on package_images for select using (true);
 create policy "public read site_settings" on site_settings for select using (true);
+create policy "public read visible reviews" on reviews for select using (is_hidden = false);
 
 create policy "public insert leads" on leads for insert with check (true);
 

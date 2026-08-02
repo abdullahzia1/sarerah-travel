@@ -1,25 +1,26 @@
 import Link from "next/link";
 import { getSupabaseAdminClient } from "@/lib/supabase/admin";
-import { getGoogleReviews } from "@/lib/google-reviews";
+import { getCachedGoogleRating } from "@/data/reviews";
 
 export const metadata = { title: "Admin Dashboard" };
 
 const CARDS = [
   { table: "destinations", href: "/admin/destinations", label: "Destinations" },
   { table: "packages", href: "/admin/packages", label: "Packages" },
+  { table: "reviews", href: "/admin/reviews", label: "Cached reviews" },
   { table: "leads", href: "/admin/leads", label: "Leads" },
 ] as const;
 
 export default async function AdminDashboardPage() {
   const supabase = getSupabaseAdminClient();
-  const [counts, googleReviews] = await Promise.all([
+  const [counts, ratingCache] = await Promise.all([
     Promise.all(
       CARDS.map(async (c) => {
         const { count } = await supabase.from(c.table).select("*", { count: "exact", head: true });
         return count ?? 0;
       })
     ),
-    getGoogleReviews(),
+    getCachedGoogleRating(),
   ]);
 
   return (
@@ -37,15 +38,22 @@ export default async function AdminDashboardPage() {
             <p className="mt-1 font-display text-3xl font-bold text-stone-900">{counts[i]}</p>
           </Link>
         ))}
-        <div className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-medium text-stone-500">Google rating</p>
+        <Link
+          href="/admin/reviews"
+          className="rounded-xl border border-stone-200 bg-white p-5 shadow-sm transition-smooth hover:shadow-md"
+        >
+          <p className="text-sm font-medium text-stone-500">Google rating (cached)</p>
           <p className="mt-1 font-display text-3xl font-bold text-stone-900">
-            {googleReviews.reviewCount > 0 ? `${googleReviews.rating}★` : "Not configured"}
+            {ratingCache.reviewCount > 0 ? `${ratingCache.rating}★` : "Not synced"}
           </p>
-          {googleReviews.reviewCount > 0 && (
-            <p className="mt-1 text-xs text-stone-500">{googleReviews.reviewCount} reviews on Google</p>
-          )}
-        </div>
+          <p className="mt-1 text-xs text-stone-500">
+            {ratingCache.reviewCount > 0
+              ? `${ratingCache.reviewCount} reviews on Google · synced ${
+                  ratingCache.syncedAt ? new Date(ratingCache.syncedAt).toLocaleString() : "never"
+                }`
+              : "Run a sync from the Reviews page"}
+          </p>
+        </Link>
       </div>
     </div>
   );

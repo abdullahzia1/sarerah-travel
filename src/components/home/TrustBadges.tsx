@@ -1,9 +1,9 @@
 import { getSiteSettings } from "@/data/settings";
-import { getGoogleReviews } from "@/lib/google-reviews";
+import { getCachedGoogleRating } from "@/data/reviews";
 import { ViewportReveal } from "@/components/ui/animations";
 
 export async function TrustBadges() {
-  const [{ trustBadges }, { rating, reviewCount }] = await Promise.all([getSiteSettings(), getGoogleReviews()]);
+  const [{ trustBadges }, { rating, reviewCount }] = await Promise.all([getSiteSettings(), getCachedGoogleRating()]);
 
   return (
     <section className="border-b border-stone-200 bg-white py-8">

@@ -2,7 +2,7 @@
 
 ## Architecture
 
-Content (destinations, packages, itineraries, images, leads) lives in **Supabase** (Postgres + Storage). Public pages read it via the anon key (Row Level Security restricts that key to `SELECT` on content tables and `INSERT` on leads). The `/admin` area lets you manage content and is gated by a single hardcoded username/password (MVP-level auth, see below). Reviews and the homepage rating are pulled live from the **Google Places API** — not stored in the database.
+Content (destinations, packages, itineraries, images, leads, cached reviews) lives in **Supabase** (Postgres + Storage). Public pages read it via the anon key (Row Level Security restricts that key to `SELECT` on content tables and `INSERT` on leads). The `/admin` area lets you manage content and is gated by a single hardcoded username/password (MVP-level auth, see below). Reviews come from the **Google Places API**, but are only fetched by a weekly background sync (or a manual admin button) and cached in Supabase — public pages never call Google directly.
 
 ## Prerequisites
 
@@ -29,7 +29,8 @@ Create `.env.local` (and set the same in your hosting dashboard for production):
 | `ADMIN_USERNAME` / `ADMIN_PASSWORD` | Single admin account for `/admin/login`. Use a strong password. |
 | `ADMIN_SESSION_SECRET` | Random 32+ char string signing the admin session cookie (`openssl rand -hex 32`). |
 | `NEXT_PUBLIC_SITE_URL` | Your live site URL, used for sitemap and JSON-LD. |
-| `GOOGLE_PLACES_API_KEY` / `GOOGLE_PLACES_PLACE_ID` | Optional. Powers the Reviews page and homepage rating via the Google Places API. Site works without it (reviews section just doesn't render). |
+| `GOOGLE_PLACES_API_KEY` / `GOOGLE_PLACES_PLACE_ID` | Optional. Powers the weekly review sync (see below). Site works without it (reviews section just doesn't render). |
+| `CRON_SECRET` | Required if you want the weekly review sync to run automatically. Random 16+ char string (`openssl rand -hex 16`); Vercel sends it as the `Authorization` header when it triggers the cron job. |
 
 ## Local development
 
@@ -71,6 +72,13 @@ Admin forms accept either a pasted URL or a direct upload (stored in the Supabas
 ## Google Reviews
 
 Google's Places API returns at most 5 "most relevant" reviews per business (chosen by Google, not filterable) and requires a Google Cloud project with billing enabled. Set `GOOGLE_PLACES_API_KEY` and `GOOGLE_PLACES_PLACE_ID` to enable; without them the Reviews page and homepage rating badge simply don't render.
+
+To keep costs down and avoid hammering the API, the site **never calls Google on a page view**. Instead:
+
+- `vercel.json` defines a cron job hitting `/api/cron/sync-google-reviews` every Monday at 03:00 UTC (the free Hobby plan supports jobs down to once-daily, so weekly works). It authenticates via the `CRON_SECRET` header Vercel sends automatically.
+- The sync fetches the current rating + up to 5 reviews, caches them in the `reviews` table, drops any cached review Google no longer returns, and updates the cached rating shown on the homepage/Reviews page.
+- **`/admin/reviews`** has a "Sync from Google now" button for on-demand refreshes (e.g. right after setup, so you don't wait a week), plus a **Hide/Show** toggle per review — hidden reviews are excluded from the public site via RLS but stay in the cache so you can unhide them later.
+- If you're not deploying to Vercel, trigger the same sync some other way (any scheduler that can send `GET /api/cron/sync-google-reviews` with `Authorization: Bearer $CRON_SECRET`) or just click the admin button periodically.
 
 ## Leads
 

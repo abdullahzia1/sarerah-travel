@@ -1,4 +1,4 @@
-import { getGoogleReviews } from "@/lib/google-reviews";
+import { getAllReviews, getCachedGoogleRating } from "@/data/reviews";
 import type { Metadata } from "next";
 import { ReviewsContent } from "./ReviewsContent";
 
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ReviewsPage() {
-  const { reviews, rating, reviewCount } = await getGoogleReviews();
+  const [reviews, { rating, reviewCount }] = await Promise.all([getAllReviews(), getCachedGoogleRating()]);
 
   return (
     <div className="pb-24 md:pb-12">
