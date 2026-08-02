@@ -80,6 +80,10 @@ To keep costs down and avoid hammering the API, the site **never calls Google on
 - **`/admin/reviews`** has a "Sync from Google now" button for on-demand refreshes (e.g. right after setup, so you don't wait a week), plus a **Hide/Show** toggle per review — hidden reviews are excluded from the public site via RLS but stay in the cache so you can unhide them later.
 - If you're not deploying to Vercel, trigger the same sync some other way (any scheduler that can send `GET /api/cron/sync-google-reviews` with `Authorization: Bearer $CRON_SECRET`) or just click the admin button periodically.
 
+## Keeping Supabase awake
+
+Supabase's free tier pauses a project after 7 days with zero API activity — the database becomes inaccessible until someone manually resumes it in the dashboard, which would take the live site down with it. `vercel.json` also defines a **daily** cron (`/api/cron/keep-alive`, 04:00 UTC) that runs one trivial query just to register activity, well inside the 7-day window. Between this and the weekly review sync, that's 2 cron jobs total — the max the free Hobby plan allows, so no upgrade needed just for this. (Real site traffic keeps Supabase awake on its own too; this cron is only a safety net for quiet periods, e.g. before launch.)
+
 ## Leads
 
 Submitted via the contact form, homepage lead form, and itinerary request form — all POST to `/api/leads`, which inserts into the `leads` table (RLS allows public insert only; reading/deleting requires the admin panel).
