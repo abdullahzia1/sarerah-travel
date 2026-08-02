@@ -1,6 +1,7 @@
 "use client";
 
 import { StaggerContainer, StaggerChild, ViewportReveal } from "@/components/ui/animations";
+import { ReviewAvatar } from "@/components/reviews/ReviewAvatar";
 import { formatDate } from "@/lib/utils";
 import type { Review } from "@/types";
 
@@ -46,6 +47,7 @@ export function ReviewsContent({ reviews, rating, count, source }: ReviewsConten
                 </div>
                 <p className="mt-4 text-lg text-stone-700">&ldquo;{r.text}&rdquo;</p>
                 <footer className="mt-4 flex flex-wrap items-center gap-2 text-sm text-stone-500">
+                  <ReviewAvatar author={r.author} avatar={r.avatar} size={32} />
                   <strong className="text-stone-800">{r.author}</strong>
                   <span>·</span>
                   <time dateTime={r.date}>{formatDate(r.date)}</time>

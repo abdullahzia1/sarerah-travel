@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { formatDate } from "@/lib/utils";
 import { ViewportReveal } from "@/components/ui/animations";
+import { ReviewAvatar } from "@/components/reviews/ReviewAvatar";
 import type { Review } from "@/types";
 
 interface TestimonialsProps {
@@ -44,7 +45,10 @@ export function Testimonials({ reviews }: TestimonialsProps) {
                   </div>
                   <p className="mt-4 text-lg text-stone-700">&ldquo;{r.text}&rdquo;</p>
                   <footer className="mt-6 flex items-center justify-between">
-                    <cite className="font-semibold not-italic text-stone-900">{r.author}</cite>
+                    <div className="flex items-center gap-3">
+                      <ReviewAvatar author={r.author} avatar={r.avatar} size={36} />
+                      <cite className="font-semibold not-italic text-stone-900">{r.author}</cite>
+                    </div>
                     <time className="text-sm text-stone-500">{formatDate(r.date)}</time>
                   </footer>
                 </blockquote>

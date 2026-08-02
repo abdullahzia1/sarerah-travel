@@ -148,6 +148,24 @@ create policy "public read visible reviews" on reviews for select using (is_hidd
 
 create policy "public insert leads" on leads for insert with check (true);
 
+-- ============ Grants ============
+-- RLS policies above only control which rows a role can see -- the role
+-- still needs a baseline table-level GRANT before RLS is even evaluated.
+-- Explicit here since relying on Supabase's automatic default grants isn't
+-- always reliable for tables created via the SQL Editor.
+
+grant usage on schema public to anon, authenticated, service_role;
+
+grant select on
+  destinations, packages, package_itineraries, package_images, site_settings, reviews
+to anon, authenticated;
+
+grant insert on leads to anon;
+
+grant all on
+  destinations, packages, package_itineraries, package_images, site_settings, reviews, leads
+to service_role;
+
 -- ============ Storage ============
 -- Public bucket for admin-uploaded images. Anyone can read (site is public
 -- marketing content); only the service role (admin uploads) can write.

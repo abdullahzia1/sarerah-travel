@@ -2,6 +2,7 @@ import { getSupabaseAdminClient } from "@/lib/supabase/admin";
 import { setReviewHidden } from "./actions";
 import { SyncReviewsButton } from "./SyncReviewsButton";
 import { secondaryButtonClass } from "@/components/admin/form-styles";
+import { ReviewAvatar } from "@/components/reviews/ReviewAvatar";
 
 export const metadata = { title: "Admin: Reviews" };
 
@@ -9,7 +10,7 @@ export default async function AdminReviewsPage() {
   const supabase = getSupabaseAdminClient();
   const { data: reviews, error } = await supabase
     .from("reviews")
-    .select("id, author, rating, text, date, is_hidden")
+    .select("id, author, rating, text, date, is_hidden, avatar_url")
     .order("date", { ascending: false });
   if (error) throw new Error(error.message);
 
@@ -41,7 +42,12 @@ export default async function AdminReviewsPage() {
           <tbody>
             {(reviews ?? []).map((r) => (
               <tr key={r.id} className={`border-b border-stone-100 last:border-0 ${r.is_hidden ? "opacity-50" : ""}`}>
-                <td className="p-3 font-medium text-stone-900">{r.author}</td>
+                <td className="p-3">
+                  <div className="flex items-center gap-2">
+                    <ReviewAvatar author={r.author} avatar={r.avatar_url ?? undefined} size={28} />
+                    <span className="font-medium text-stone-900">{r.author}</span>
+                  </div>
+                </td>
                 <td className="p-3 text-stone-600">{r.rating}★</td>
                 <td className="p-3 text-stone-500">{new Date(r.date).toLocaleDateString()}</td>
                 <td className="max-w-xs truncate p-3 text-stone-600">{r.text}</td>

@@ -16,7 +16,8 @@ export default async function AdminDashboardPage() {
   const [counts, ratingCache] = await Promise.all([
     Promise.all(
       CARDS.map(async (c) => {
-        const { count } = await supabase.from(c.table).select("*", { count: "exact", head: true });
+        const { count, error } = await supabase.from(c.table).select("*", { count: "exact", head: true });
+        if (error) throw new Error(`${c.table}: ${error.message}`);
         return count ?? 0;
       })
     ),
